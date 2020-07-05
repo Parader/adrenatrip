@@ -3,9 +3,8 @@ import PropTypes from "prop-types"
 import React from "react"
 import Logo from "./logo"
 import classNames from "classnames"
-import { Layout, Menu, Breadcrumb } from "antd"
+import { Menu } from "antd"
 import { InstagramOutlined, MailOutlined } from "@ant-design/icons"
-const { Header: HeadLayout, Content } = Layout
 
 class Header extends React.Component {
   constructor(props) {
@@ -13,7 +12,10 @@ class Header extends React.Component {
 
     this.state = {
       activeMenu: [],
+      isMobileOpen: false,
+      isMobileOpenKey: 0,
     }
+    this.scrollListener = null
   }
 
   componentDidMount() {
@@ -33,21 +35,57 @@ class Header extends React.Component {
       activeMenu = "item_1"
     } else if (location.pathname.includes("/liens")) {
       activeMenu = "item_2"
+    } else if (location.pathname.includes("/articles/")) {
+      activeMenu = "item_6"
     }
     this.setState({ activeMenu })
   }
 
   handleMenuClick = val => {
     this.setState({ activeMenu: val.keyPath })
+    if (val.keyPath[0] === "item_1") {
+      window.localStorage.removeItem("filtersTrace")
+      if (this.props.location.pathname === "/articles/")
+        window.location.reload(false)
+    }
+  }
+
+  handleMenuOpen = e => {
+    this.setState({
+      isMobileOpen: !this.state.isMobileOpen,
+    })
+    if (!this.state.isMobileOpen && !this.scrollListener) {
+      this.scrollListener = document.addEventListener(
+        "scroll",
+        this.closePopupMenu
+      )
+    }
+    if (this.state.isMobileOpen) {
+      document.removeEventListener("scroll", this.closePopupMenu)
+    }
+  }
+
+  closePopupMenu = () => {
+    if (this.state.isMobileOpen) {
+      this.setState({
+        isMobileOpen: false,
+        isMobileOpenKey: Math.random().toString(),
+      })
+      document.removeEventListener("scroll", this.closePopupMenu)
+    }
   }
 
   handleLogoClick = () => {
     this.setState({ activeMenu: ["item_0"] })
   }
 
+  handleMobileMenuClick = () => {}
+
   render() {
     const { location } = this.props
-    const headerClasses = classNames({ home: location.pathname === "/" })
+    const headerClasses = classNames("shade", {
+      home: location.pathname === "/",
+    })
     return (
       <StaticQuery
         query={graphql`
@@ -83,39 +121,55 @@ class Header extends React.Component {
                   selectable
                   onClick={this.handleMenuClick}
                   selectedKeys={this.state.activeMenu}
+                  overflowedIndicator={"MENU"}
+                  onOpenChange={this.handleMenuOpen}
+                  key={this.state.isMobileOpenKey}
                 >
                   <Menu.Item
                     onClick={() => {
                       navigate("/")
-                      console.log("link click")
                     }}
                   >
-                    <Link to={"/"}>Accueil</Link>
+                    <Link to={"/"} className="underline-hover">
+                      Accueil
+                    </Link>
                   </Menu.Item>
                   <Menu.Item
                     onClick={() => {
                       navigate("/articles")
-                      console.log("link click")
                     }}
                   >
-                    <Link to={"/articles"}>Articles</Link>
+                    <Link to={"/articles"} className="underline-hover">
+                      Articles
+                    </Link>
                   </Menu.Item>
                   <Menu.Item
                     onClick={() => {
                       navigate("/liens-utiles")
-                      console.log("link click")
                     }}
                   >
-                    <Link to={"/liens-utiles"}>Liens Utiles</Link>
+                    <Link to={"/liens-utiles"} className="underline-hover">
+                      Liens Utiles
+                    </Link>
                   </Menu.Item>
                   <Menu.Item className="icon">
-                    <a href={instagram} target="_blank">
+                    <a
+                      href={instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <InstagramOutlined />
+                      <span className="label">Instagram</span>
                     </a>
                   </Menu.Item>
                   <Menu.Item className="icon">
-                    <a href={`mailto:${email}`} target="_blank">
+                    <a
+                      href={`mailto:${email}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <MailOutlined />
+                      <span className="label">Email</span>
                     </a>
                   </Menu.Item>
                 </Menu>

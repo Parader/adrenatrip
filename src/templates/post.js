@@ -1,47 +1,39 @@
 import React from "react"
-import { Link, graphql } from "gatsby"
+import { Link, graphql, navigate } from "gatsby"
 import ReactDOM from "react-dom"
 import Img from "../components/image"
 import getItemById from "../utils/getItemById"
 import classNames from "classnames"
-import Zoom from "react-medium-image-zoom"
 import { Layout, Breadcrumb } from "antd"
 import InstagramModule from "../components/instagramModule"
 import PostFooter from "../components/postFooter"
 import { DiscussionEmbed } from "disqus-react"
+import TweenOne from "rc-tween-one"
+import getMonth from "../utils/getMonth"
+import SEO from "../components/seo"
+import stripHtml from "../utils/stripHtml"
 
 const { Content } = Layout
-
-const disqusConfig = {
-  shortname: process.env.GATSBY_DISQUS_NAME,
-  config: { identifier: "", title: "" },
-}
-
-const times = x => f => {
-  if (x > 0) {
-    f()
-    times(x - 1)(f)
-  }
-}
 
 class PostTemplate extends React.Component {
   constructor(props) {
     super(props)
     this.content = React.createRef()
+    this.state = {}
   }
 
   componentDidMount() {
-    this.replaceLinks()
-    this.replaceImages()
+    if (typeof window !== `undefined`) {
+      this.replaceLinks()
+      this.replaceImages()
+    }
   }
-
-  handleCategoryClick = () => {}
 
   replaceLinks() {
     const links = this.content.current.getElementsByTagName("a")
     if (links.length > 0) {
       let elm, link, parent
-      times(links.length)(() => {
+      for (let i = 0; i < links.length; i++) {
         link = links[0]
         parent = link.parentElement
         elm = document.createElement("span")
@@ -50,41 +42,46 @@ class PostTemplate extends React.Component {
         if (!link.attributes.target) {
           this.renderLink(elm, link.attributes.href.value, link.text)
         }
-      })
+      }
     }
   }
 
   replaceImages() {
     const { images } = this.props.data.wordpressPost.acf
-    const imgs = this.content.current.getElementsByTagName("figure")
+    const imgs = this.content.current.querySelectorAll("figure")
+
     if (imgs.length > 0) {
-      times(imgs.length)(() => {
-        const img = imgs[0]
-        let alt = ""
-        if (img.attributes["data-alt"]) {
-          alt = img.attributes["data-alt"].nodeValue
-        } else {
-          alt = img.firstChild
-            ? img.firstChild.nextSibling.attributes[1].value
-            : ""
+      for (let i = 0; i < imgs.length; i++) {
+        const img = imgs[i]
+        if (!img.classList.value.includes("embed")) {
+          let alt = ""
+          if (img.attributes["data-alt"]) {
+            alt = img.attributes["data-alt"].nodeValue
+          } else {
+            alt = img.firstChild
+              ? img.firstChild.nextSibling.attributes[1].value
+              : ""
+          }
+
+          const imgUrl = img.attributes[0].value
+          const imgName = imgUrl.substring(
+            imgUrl.lastIndexOf("/") + 1,
+            imgUrl.lastIndexOf(".")
+          )
+
+          const file = images.filter(i => i.localFile.name === imgName)[0]
+          const fluidImage = file.localFile.childImageSharp.fluid
+
+          const elm = document.createElement("span")
+          const isZoomable = !img.parentElement.classList.contains(
+            "full-screen-image"
+          )
+
+          img.parentElement.insertBefore(elm, img)
+          img.remove()
+          this.renderImage(elm, fluidImage, alt, isZoomable)
         }
-
-        const imgUrl = img.attributes[0].value
-        const imgName = imgUrl.substring(
-          imgUrl.lastIndexOf("/") + 1,
-          imgUrl.lastIndexOf(".")
-        )
-
-        const file = images.filter(i => i.localFile.name === imgName)[0]
-        const fluidImage = file.localFile.childImageSharp.fluid
-
-        const elm = document.createElement("span")
-        const isZoomable = !img.classList.contains("full-screen-image")
-
-        img.parentElement.insertBefore(elm, img)
-        img.remove()
-        this.renderImage(elm, fluidImage, alt, isZoomable)
-      })
+      }
     }
   }
 
@@ -104,18 +101,31 @@ class PostTemplate extends React.Component {
 
   swapFigures() {
     const currentPost = this.props.data.wordpressPost
-    const regex = /<figure[^>]*><img[^>]*src="([^"]*)".*?alt="([^"]*)".*?<\/figure>/g
+    const regex = /<figure[^>]*(?!embed)[^>]*>[^>]*?<img[^>]*src="([^"]*)".*?alt="([^"]*)".*?<\/figure>/gms // /<figure[^>]*><img[^>]*src="([^"]*)".*?alt="([^"]*)".*?<\/figure>/gm
+    const regexp = new RegExp(regex)
+
     const figures = currentPost.content.replace(
-      regex,
+      regexp,
       '<figure data-src="$1" data-alt="$2" ></figure>'
     )
 
     return figures
   }
 
+  handleCategoryClick = e => {
+    e.stopPropagation()
+    e.preventDefault()
+    navigate(
+      `/articles/${
+        e.target.getAttribute("href") !== null
+          ? e.target.getAttribute("href")
+          : e.target.closest("a").getAttribute("href")
+      }`
+    )
+  }
+
   render() {
     const { data, pageContext, location } = this.props
-    const siteMetadata = data.site.siteMetadata
     const currentPost = data.wordpressPost
     const allWordpressAcfOptions = data.allWordpressAcfOptions
 
@@ -126,51 +136,107 @@ class PostTemplate extends React.Component {
       return [c, ...sum]
     }, [])
 
+    const fadeIn = {
+      y: 0,
+      opacity: 1,
+      duration: 200,
+      delay: 200,
+    }
+    const date = data.wordpressPost.date.split("/")
+
     return (
       <div className={`post ${currentPost.slug}`}>
-        <Content className="content-wrapper">
-          {hasCover && (
-            <div className="post-cover">
-              <Img
-                fluid={
-                  data.wordpressPost.acf.featured_image.localFile
-                    .childImageSharp.fluid
-                }
-                alt={data.wordpressPost.acf.featured_image.alt_text}
-              />
-            </div>
+        <SEO
+          title={data.wordpressPost.title}
+          location={location}
+          description={stripHtml(
+            data.wordpressPost.content.substring(0, 130) + "..."
           )}
-
-          <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item>Articles</Breadcrumb.Item>
-            <Breadcrumb.Item>{currentPost.title}</Breadcrumb.Item>
-          </Breadcrumb>
+          image={
+            data.wordpressPost.acf.featured_image.localFile.childImageSharp
+              .fluid.src
+          }
+        />
+        <Content className="content-wrapper">
+          <TweenOne animation={fadeIn} style={{ opacity: 0 }}>
+            {hasCover && (
+              <div className="post-cover">
+                <Img
+                  fluid={
+                    data.wordpressPost.acf.featured_image.localFile
+                      .childImageSharp.fluid
+                  }
+                  alt={data.wordpressPost.acf.featured_image.alt_text}
+                />
+              </div>
+            )}
+          </TweenOne>
+          <TweenOne
+            animation={fadeIn}
+            style={{ transform: "translateY(10px)", opacity: 0, delay: 600 }}
+          >
+            <Breadcrumb className="breadcrumb">
+              <Breadcrumb.Item>
+                {" "}
+                <Link to="/articles"> Articles</Link>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>{currentPost.title}</Breadcrumb.Item>
+            </Breadcrumb>
+          </TweenOne>
           <div className="post-content">
-            <h1 dangerouslySetInnerHTML={{ __html: currentPost.title }} />
+            <TweenOne
+              animation={{ ...fadeIn, delay: 300 }}
+              style={{ transform: "translateY(10px)", opacity: 0 }}
+            >
+              <h1
+                className="title"
+                dangerouslySetInnerHTML={{ __html: currentPost.title }}
+              />
+              <p className="date">{`${date[0]} ${getMonth(date[1])} ${
+                date[2]
+              }`}</p>
+            </TweenOne>
             <div className="categories">
               {categories.map((c, i) => {
-                if (c.wordpress_parent !== 0) return
-                if (c.acf === null) return
+                if (c.wordpress_parent !== 0) return null
+                if (c.acf === null) return null
                 const catClasses = classNames("category", c.acf.type)
                 return (
-                  <Link
-                    to={`/articles?${
-                      c.acf.type === "geographique" ? "c" : "cat"
-                    }=${c.slug}`}
-                    className={catClasses}
+                  <TweenOne
+                    animation={{
+                      x: 0,
+                      opacity: 1,
+                      duration: 200,
+                      delay: 500 + 100 * i,
+                      ease: "easeInOutQuad",
+                    }}
+                    style={{ transform: "translateX(10px)", opacity: 0 }}
                     key={`article-categ-${i}`}
-                    onClick={this.handleCategoryClick}
                   >
-                    {c.name}
-                  </Link>
+                    <a
+                      href={`#${c.slug}|${
+                        c.acf.type === "informatif" ? "i" : "g"
+                      }`}
+                      className={catClasses}
+                      onClick={this.handleCategoryClick}
+                    >
+                      {c.name}
+                    </a>
+                  </TweenOne>
                 )
               })}
-            </div>
-            <div
-              ref={this.content}
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
+            </div>{" "}
+            <TweenOne
+              animation={{ ...fadeIn, delay: 900 }}
+              style={{ transform: "translateY(8px)", opacity: 0 }}
+            >
+              <div
+                ref={this.content}
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            </TweenOne>
             <PostFooter
+              handleCategoryClick={this.handleCategoryClick}
               currentPost={{ url: location.href, categories }}
               nextPost={
                 data.nextPost && {
@@ -217,7 +283,7 @@ export const postQuery = graphql`
     wordpressPost(id: { eq: $id }) {
       title
       content
-      date(formatString: "MMMM DD, YYYY")
+      date(formatString: "D/MM/YYYY")
       slug
       categories {
         id

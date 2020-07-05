@@ -2,6 +2,9 @@ import React from "react"
 import { Link, graphql } from "gatsby"
 import ReactDOM from "react-dom"
 import Img from "gatsby-image"
+import TweenOne from "rc-tween-one"
+import SEO from "../components/seo"
+import stripHtml from "../utils/stripHtml"
 
 import { Layout } from "antd"
 
@@ -21,8 +24,10 @@ class PageTemplate extends React.Component {
   }
 
   componentDidMount() {
-    this.replaceLinks()
-    this.replaceImages()
+    if (typeof window !== `undefined`) {
+      this.replaceLinks()
+      this.replaceImages()
+    }
   }
 
   replaceLinks() {
@@ -102,43 +107,40 @@ class PageTemplate extends React.Component {
   }
 
   render() {
-    const siteMetadata = this.props.data.site.siteMetadata
+    const { location } = this.props
     const currentPage = this.props.data.wordpressPage
 
-    const hasCover = this.props.data.wordpressPage.acf.banner
-    const hasCoverContent = this.props.data.wordpressPage.acf.bannerContent
-
     const content = this.swapFigures()
-
+    const fadeIn = {
+      y: 0,
+      opacity: 1,
+      duration: 200,
+      delay: 200,
+    }
     return (
       <div className={`page ${currentPage.slug}`}>
+        <SEO
+          title={currentPage.title}
+          location={location}
+          description={stripHtml(currentPage.content.substring(0, 150) + "...")}
+        />
         <Content className="content-wrapper">
-          {hasCover && (
-            <div className="page-cover">
-              <Img
-                fluid={
-                  this.props.data.wordpressPage.acf.cover.localFile
-                    .childImageSharp.fluid
-                }
-              />
-              <div className="content">
-                {hasCoverContent && (
-                  <div
-                    className="content"
-                    dangerouslySetInnerHTML={
-                      this.props.data.wordpressPage.acf.bannerContent
-                    }
-                  />
-                )}
-              </div>
-            </div>
-          )}
           <div className="page-content">
-            <h1 dangerouslySetInnerHTML={{ __html: currentPage.title }} />
-            <div
-              ref={this.content}
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
+            <TweenOne
+              animation={fadeIn}
+              style={{ transform: "translateY(10px)", opacity: 0 }}
+            >
+              <h1 dangerouslySetInnerHTML={{ __html: currentPage.title }} />
+            </TweenOne>
+            <TweenOne
+              animation={{ ...fadeIn, delay: 300 }}
+              style={{ transform: "translateY(10px)", opacity: 0 }}
+            >
+              <div
+                ref={this.content}
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            </TweenOne>
           </div>
         </Content>
       </div>

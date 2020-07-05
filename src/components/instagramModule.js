@@ -1,18 +1,25 @@
 import React from "react"
 import { StaticQuery, graphql } from "gatsby"
 import Img from "./image"
+import { InstagramOutlined } from "@ant-design/icons"
+import classNames from "classnames"
+import VisibilitySensor from "react-visibility-sensor"
 
 class InstagramModule extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  componentDidMount() {}
-
   render() {
     const { options } = this.props
+    let visibilityCounter = 0
     return (
       <div className="instagram-module">
+        <VisibilitySensor>
+          {({ isVisible }) => {
+            if (visibilityCounter < 1 && isVisible) visibilityCounter = 1
+            const classes = classNames("visibility-sensor fader", {
+              isVisible: visibilityCounter > 0,
+            })
+            return <div className={classes} style={{ height: "1px" }}></div>
+          }}
+        </VisibilitySensor>
         <div className="back">
           <StaticQuery
             query={graphql`
@@ -20,6 +27,7 @@ class InstagramModule extends React.Component {
                 allInstaNode {
                   edges {
                     node {
+                      id
                       caption
                       localFile {
                         childImageSharp {
@@ -42,8 +50,9 @@ class InstagramModule extends React.Component {
                   {data.allInstaNode.edges.map((el, i) => {
                     return (
                       <div
-                        className={`pic pic-${i} ${i % 2 && "odd"}`}
+                        className={`pic fader pic-${i} ${i % 2 && "odd"}`}
                         key={`insta-pic-${i}`}
+                        style={{ "--anim-order": 12 - i }}
                       >
                         <div className="content">
                           <Img
@@ -55,7 +64,16 @@ class InstagramModule extends React.Component {
                             className="original"
                             isZoomable={false}
                           />
-                          <p className="caption">{el.node.caption}</p>
+                          <div className="caption">
+                            <p>{`${el.node.caption.substring(0, 72)}...`}</p>
+                            <a
+                              href={`https://instagram.com/p/${el.node.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <InstagramOutlined />
+                            </a>
+                          </div>
                         </div>
                       </div>
                     )

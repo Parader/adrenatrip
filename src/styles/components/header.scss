@@ -8,19 +8,16 @@ header {
   justify-content: space-between;
   align-items: center;
   z-index: 99;
-  background: #fff;
-  transition: box-shadow 200ms ease-out;
-  &:not(.home) {
-    -webkit-box-shadow: 0 7px 7px 0 rgba(200, 200, 200, 0.1);
-    box-shadow: 0 7px 7px 0 rgba(200, 200, 200, 0.1);
-  }
+  background: rgba(255, 255, 255, 1);
+  transition: background 150ms ease-out;
   &.home {
     position: absolute;
     bottom: 0;
     top: inherit;
-    // transform: translateY(var(--top3));
-    // will-change: transform;
-    // transition: transform 10ms ease;
+    background: none;
+    .mask {
+      display: none;
+    }
   }
 
   > div {
@@ -33,6 +30,16 @@ header {
     height: 60px;
     position: relative;
     overflow: hidden;
+
+    @media (max-width: 1080px) {
+      width: 160px;
+      svg {
+        .mask {
+          opacity: 0;
+          visibility: hidden;
+        }
+      }
+    }
     &:hover {
       svg {
         .mask {
@@ -59,20 +66,63 @@ header {
     display: flex;
     align-items: center;
     margin: 0 44px 0 0;
+    position: relative;
+    @media (max-width: 480px) {
+      margin: 0 28px 0 0;
+    }
+    .ant-menu-submenu-active .ant-menu-submenu-title {
+      color: #006285;
+    }
+    .ant-menu-overflowed-submenu {
+      color: $grey8;
+      font-weight: 600;
+      border-bottom: none;
+      &.ant-menu-submenu-active {
+        color: #006285;
+      }
+      &.ant-menu-submenu-title {
+        color: $grey8;
+        border-bottom: none;
+      }
+      &.ant-menu-submenu {
+        &:hover {
+          color: #006285;
+          border-bottom: none;
+        }
+      }
+    }
     ul {
       background: none;
       border-bottom: none;
+      width: auto;
+      display: inline-block;
+      @media (max-width: 1080px) {
+        width: 50px;
+      }
       li.ant-menu-item {
         border-bottom: none;
         &:hover {
           border-bottom: none;
           a {
-            color: $color1;
+            color: #006285;
+
+            &:after {
+              transform: translateY(-26px);
+              opacity: 1;
+            }
+          }
+        }
+        @media (min-width: 1080px) {
+          .label {
+            display: none;
           }
         }
         a {
           &:before {
             display: none;
+          }
+          &:after {
+            background: #006285;
           }
         }
         &.ant-menu-item-selected {
@@ -81,7 +131,7 @@ header {
           }
           &:hover {
             a {
-              color: $color1;
+              color: #006285;
             }
           }
         }
@@ -90,6 +140,47 @@ header {
           .anticon {
             font-size: 22px;
           }
+          &:hover {
+            a {
+              color: #e37c5f;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.ant-menu-submenu-popup {
+  ul.ant-menu:not(.ant-menu-horizontal) {
+    min-width: 200px;
+    padding: 8px 0 16px;
+    text-align: center;
+    margin-right: 16px;
+    li {
+      position: relative;
+      a {
+        font-size: 18px;
+      }
+      &.ant-menu-item-selected {
+        // background-color: inherit;
+        a {
+          color: #006285;
+        }
+      }
+
+      &.icon {
+        span {
+          display: inline-block;
+        }
+
+        .anticon {
+          font-size: 20px;
+          color: $grey7;
+          position: absolute;
+          left: 20px;
+          top: 50%;
+          transform: translateY(-50%);
         }
       }
     }

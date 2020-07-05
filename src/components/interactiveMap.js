@@ -4,10 +4,6 @@ import classnames from "classnames"
 import Map from "./map"
 
 class InteractiveMap extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
   handleClick = e => {
     this.props.onClick(e.target.parentElement.parentElement, true)
   }

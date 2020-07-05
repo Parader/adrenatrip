@@ -9,7 +9,7 @@ import {
   DoubleRightOutlined,
 } from "@ant-design/icons"
 
-const PostFooter = ({ currentPost, nextPost }) => {
+const PostFooter = ({ currentPost, nextPost, handleCategoryClick }) => {
   return (
     <div className="post-footer">
       <div className="categories">
@@ -17,15 +17,14 @@ const PostFooter = ({ currentPost, nextPost }) => {
           if (c.name === "Uncategorized") return
           const catClasses = classNames("category", c.acf.type)
           return (
-            <Link
-              to={`/articles?${c.acf.type === "geographique" ? "c" : "cat"}=${
-                c.slug
-              }`}
+            <a
+              href={`#${c.slug}|${c.acf.type === "informatif" ? "i" : "g"}`}
               className={catClasses}
               key={`article-footer-categ-${i}`}
+              onClick={handleCategoryClick}
             >
               {c.name}
-            </Link>
+            </a>
           )
         })}
       </div>

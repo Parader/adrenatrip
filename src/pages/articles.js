@@ -1,21 +1,17 @@
 import React from "react"
 import { Link, navigate } from "gatsby"
 
-import Image from "../components/image"
 import Filters from "../components/filters"
 import SEO from "../components/seo"
-import { Button } from "antd"
-import Logo from "../components/logo"
-import Swiper from "swiper"
 import Img from "gatsby-image"
-import { LeftOutlined, RightOutlined, UpOutlined } from "@ant-design/icons"
-import _ from "lodash"
-import * as basicScroll from "basicscroll"
+import { UpOutlined } from "@ant-design/icons"
 import classNames from "classnames"
 import getItemById from "../utils/getItemById"
 import getMonth from "../utils/getMonth"
 import queryString from "query-string"
 import InstagramModule from "../components/instagramModule"
+import VisibilitySensor from "react-visibility-sensor"
+import stripHtml from "../utils/stripHtml"
 
 class ArticlesPage extends React.Component {
   constructor(props) {
@@ -38,39 +34,56 @@ class ArticlesPage extends React.Component {
 
   initFilters = () => {
     const { location } = this.props
-    const hasParams =
-      location.href.includes("cat=") ||
-      location.href.includes("c=") ||
-      location.href.includes("s=")
-
-    const { cat, c, s } = queryString.parse(location.search)
 
     let urlCategories = false,
       urlContinents = false,
       urlKeywords = false
+    if (location.href.includes("#") && location.href.includes("|")) {
+      const filter = location.href.split("#")[1]
 
-    if (cat) {
-      urlCategories = this.getCategories().filter(c => {
-        return cat.includes(c.node.slug)
-      })
-    }
-    if (c) {
-      urlContinents = this.getContinents().filter(cont => {
-        return c.includes(cont.node.slug)
-      })
-    }
-    if (s) {
-      urlKeywords = s.split(",")
-    }
+      const filterValue = filter.split("|")[0]
+      const filterType = filter.split("|")[1]
 
-    this.setState({
-      filters: {
+      if (filterType === "i") {
+        urlCategories = this.getCategories().filter(c => {
+          return filterValue.includes(c.node.slug)
+        })
+      }
+      if (filterType === "g") {
+        urlContinents = this.getContinents().filter(cont => {
+          return filterValue.includes(cont.node.slug)
+        })
+      }
+      if (filterType === "s") {
+        urlKeywords = filterValue.split(",")
+      }
+      const newState = {
         keywords: urlKeywords ? urlKeywords : [],
         continents: urlContinents ? urlContinents : this.getContinents(),
         categories: urlCategories ? urlCategories : this.getCategories(),
         // pays: this.getPays(),
-      },
-    })
+      }
+      this.setState({
+        filters: newState,
+      })
+    } else {
+      const filters = window.localStorage.getItem("filtersTrace")
+      if (filters) {
+        this.setState({ filters: JSON.parse(filters) })
+      } else {
+        const newState = {
+          keywords: urlKeywords ? urlKeywords : [],
+          continents: urlContinents ? urlContinents : this.getContinents(),
+          categories: urlCategories ? urlCategories : this.getCategories(),
+          // pays: this.getPays(),
+        }
+        this.setState({
+          filters: newState,
+        })
+      }
+    }
+
+    navigate("/articles/")
   }
 
   componentDidUpdate(oldProps) {
@@ -100,12 +113,41 @@ class ArticlesPage extends React.Component {
   handleCategoryClick = e => {
     e.stopPropagation()
     e.preventDefault()
-    e.persist()
-    console.log(e.target.getAttribute("href"))
-    setTimeout(() => {
-      navigate(e.target.getAttribute("href"))
-    }, 0)
-    // navigate(to)
+    window.localStorage.removeItem("filtersTrace")
+    this.handleBackToTop()
+    let urlCategories = false,
+      urlContinents = false,
+      urlKeywords = false
+    const filter =
+      e.target.getAttribute("href") !== null
+        ? e.target.getAttribute("href")
+        : e.target.closest("a").getAttribute("href")
+
+    const filterValue = filter.split("|")[0]
+    const filterType = filter.split("|")[1]
+
+    if (filterType === "i") {
+      urlCategories = this.getCategories().filter(c => {
+        return filterValue.includes(c.node.slug)
+      })
+    }
+    if (filterType === "g") {
+      urlContinents = this.getContinents().filter(cont => {
+        return filterValue.includes(cont.node.slug)
+      })
+    }
+    if (filterType === "s") {
+      urlKeywords = filterValue.split(",")
+    }
+    const newState = {
+      keywords: urlKeywords ? urlKeywords : [],
+      continents: urlContinents ? urlContinents : this.getContinents(),
+      categories: urlCategories ? urlCategories : this.getCategories(),
+      // pays: this.getPays(),
+    }
+    this.setState({
+      filters: newState,
+    })
   }
 
   resizeWindow = () => {
@@ -126,12 +168,6 @@ class ArticlesPage extends React.Component {
         : c.node.acf &&
             c.node.acf.type === "geographique" &&
             c.node.wordpress_parent === 0
-
-      return (
-        c.node.acf &&
-        c.node.acf.type === "geographique" &&
-        c.node.wordpress_parent === 0
-      )
     })
   }
 
@@ -152,8 +188,9 @@ class ArticlesPage extends React.Component {
   }
 
   updateFilters = (key, value) => {
-    const { data, location } = this.props
-    const { categories, continents, keywords } = this.state.filters
+    const { data } = this.props
+    const { keywords } = this.state.filters
+
     const newValue =
       key === "keywords"
         ? value
@@ -167,9 +204,25 @@ class ArticlesPage extends React.Component {
               return v
             }
           })
-    this.setState({
-      filters: Object.assign({}, this.state.filters, { [key]: newValue }),
-    })
+    const oldState = this.state.filters
+    this.setState(
+      {
+        filters: {
+          keywords: [],
+          continents: [],
+          categories: [],
+          pays: [],
+        },
+        pagination: 1,
+      },
+      () => {
+        const newState = Object.assign({}, oldState, { [key]: newValue })
+        this.setState({
+          filters: newState,
+        })
+        window.localStorage.setItem("filtersTrace", JSON.stringify(newState))
+      }
+    )
   }
 
   getFilteredArticles = (odd = false) => {
@@ -226,6 +279,10 @@ class ArticlesPage extends React.Component {
     this.setState({ pagination: this.state.pagination + 1 })
   }
 
+  handleBackToTop = () => {
+    window.scrollTo(0, 0)
+  }
+
   componentWillUnmount() {}
 
   render() {
@@ -237,11 +294,33 @@ class ArticlesPage extends React.Component {
     const otherArticles = this.getOtherArticles()
     const maxArticles = this.state.pagination * 8
     let articleCount = 0
+    let visibilityCounter = 0
 
     return (
       <>
         <div className="page page-articles">
-          <SEO title="Articles" />
+          <SEO
+            title="Articles"
+            location={location}
+            description={
+              stripHtml(
+                allWordpressAcfOptions.edges[0].node.options.texte_footer.substring(
+                  0,
+                  130
+                )
+              ) + "..."
+            }
+          />
+
+          <VisibilitySensor partialVisibility>
+            {({ isVisible }) => {
+              if (visibilityCounter < 1) visibilityCounter = 1
+              const classes = classNames("visibility-sensor fader", {
+                isVisible: visibilityCounter > 0,
+              })
+              return <div className={classes} style={{ height: "1px" }}></div>
+            }}
+          </VisibilitySensor>
           <Filters
             updateFilters={this.updateFilters}
             currentFilters={this.state.filters}
@@ -253,10 +332,10 @@ class ArticlesPage extends React.Component {
             }}
             location={location}
           />
-          <div className="articles-list">
+          <div className="articles-list ">
             {filteredArticles.length > 0 && (
               <div className="has-result">
-                <p className="count">
+                <p className="count fader" style={{ "--anim-order": "1" }}>
                   {filteredArticles.length} article
                   {filteredArticles.length > 1 && "s"}
                 </p>
@@ -267,8 +346,9 @@ class ArticlesPage extends React.Component {
                     articleCount <= maxArticles && (
                       <Link
                         to={`/articles/${a.node.slug}`}
-                        className="article"
+                        className="article fader"
                         key={`articles-list-item-${i}`}
+                        style={{ "--anim-order": i + 3 }}
                       >
                         <div className="thumbnail">
                           <Img
@@ -279,8 +359,12 @@ class ArticlesPage extends React.Component {
                           />
                         </div>
                         <div className="content">
-                          <h2>{a.node.title}</h2>
-                          <p>{`${date[0]} ${getMonth(date[1])} ${date[2]}`}</p>
+                          <span>
+                            <h2 title={a.node.title}>{a.node.title}</h2>
+                            <p>{`${date[0]} ${getMonth(date[1])} ${
+                              date[2]
+                            }`}</p>
+                          </span>
                           <div className="categories">
                             {a.node.categories.map((c, j) => {
                               const cat = getItemById(
@@ -292,11 +376,9 @@ class ArticlesPage extends React.Component {
                               const catClasses = classNames("tag", cat.acf.type)
                               return (
                                 <div
-                                  href={`/articles?${
-                                    cat.acf.type === "geographique"
-                                      ? "c"
-                                      : "cat"
-                                  }=${cat.slug}`}
+                                  href={`#${cat.slug}|${
+                                    cat.acf.type === "informatif" ? "i" : "g"
+                                  }`}
                                   className={catClasses}
                                   key={`articles-slide-${i}-cat-${j}`}
                                   onClick={this.handleCategoryClick}
@@ -316,12 +398,15 @@ class ArticlesPage extends React.Component {
 
             {
               <div className="no-result">
-                {filteredArticles.length > 0 &&
-                  otherArticles.length > 0 &&
-                  articleCount <= maxArticles && <p>Autres articles..</p>}
                 {filteredArticles.length < 1 && (
-                  <p>Aucun article ne correspond à votre recherche</p>
+                  <p className="empty">
+                    Aucun article ne correspond à votre recherche
+                  </p>
                 )}
+                {otherArticles.length > 0 && articleCount <= maxArticles && (
+                  <p>Autres articles..</p>
+                )}
+
                 {otherArticles.map((a, i) => {
                   articleCount++
                   const date = a.node.date.split("/")
@@ -330,8 +415,9 @@ class ArticlesPage extends React.Component {
                     articleCount <= maxArticles && (
                       <Link
                         to={`/articles/${a.node.slug}`}
-                        className="article"
+                        className="article fader"
                         key={`articles-list-item-${i}`}
+                        style={{ "--anim-order": i }}
                       >
                         <div className="thumbnail">
                           <Img
@@ -342,8 +428,12 @@ class ArticlesPage extends React.Component {
                           />
                         </div>
                         <div className="content">
-                          <h2>{a.node.title}</h2>
-                          <p>{`${date[0]} ${getMonth(date[1])} ${date[2]}`}</p>
+                          <span>
+                            <h2>{a.node.title}</h2>
+                            <p>{`${date[0]} ${getMonth(date[1])} ${
+                              date[2]
+                            }`}</p>
+                          </span>
                           <div className="categories">
                             {a.node.categories.map((c, j) => {
                               const cat = getItemById(
@@ -358,11 +448,9 @@ class ArticlesPage extends React.Component {
                                   className={catClasses}
                                   key={`articles-slide-${i}-cat-${j}`}
                                   onClick={this.handleCategoryClick}
-                                  href={`/articles?${
-                                    cat.acf.type === "geographique"
-                                      ? "c"
-                                      : "cat"
-                                  }=${cat.slug}`}
+                                  href={`#${cat.slug}|${
+                                    cat.acf.type === "informatif" ? "i" : "g"
+                                  }`}
                                 >
                                   {cat.name}
                                 </div>
@@ -376,14 +464,16 @@ class ArticlesPage extends React.Component {
                 })}
               </div>
             }
-            {articleCount > maxArticles && (
-              <div className="view-more" onClick={this.nextPage}>
-                Voir plus d'articles
+            <div className="extras">
+              {articleCount > maxArticles && (
+                <div className="view-more" onClick={this.nextPage}>
+                  Voir plus d'articles
+                </div>
+              )}
+              <div className="retour" onClick={this.handleBackToTop}>
+                Retour en haut
+                <UpOutlined />
               </div>
-            )}
-            <div className="retour">
-              Retour en haut
-              <UpOutlined />
             </div>
           </div>
         </div>
@@ -422,7 +512,7 @@ export const ArticlesQuery = graphql`
               localFile {
                 name
                 childImageSharp {
-                  fixed(width: 680) {
+                  fixed(width: 380) {
                     ...GatsbyImageSharpFixed
                   }
                 }
@@ -437,6 +527,7 @@ export const ArticlesQuery = graphql`
         node {
           options {
             news_band_text
+            texte_footer
           }
         }
       }
@@ -461,14 +552,6 @@ export const ArticlesQuery = graphql`
           id
           wordpress_parent
           slug
-        }
-      }
-    }
-    allWordpressTag {
-      edges {
-        node {
-          id
-          name
         }
       }
     }

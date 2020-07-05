@@ -5,14 +5,16 @@ footer {
   z-index: 90;
   width: 100%;
   max-width: 768px;
+  .fader {
+    animation-delay: calc(var(--anim-order) * 200ms) !important;
+    animation-fill-mode: both;
+  }
   .map {
     width: 100%;
     margin: auto;
     position: absolute;
-    left: 50%;
-    top: 14%;
+    top: -14%;
     z-index: -1;
-    transform: translate(-50%, -50%);
     svg {
       max-width: 468px;
       width: 100%;
@@ -33,42 +35,86 @@ footer {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
         "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-      padding: 80px 0;
+      padding: 80px 16px;
     }
   }
 
   nav.footer-menu {
     ul {
       background: none;
-      border: none;
+      border-bottom: none;
       li.ant-menu-item {
-        border: none;
-        padding: 0;
+        border-bottom: none;
+        min-width: 110px;
+        &:hover {
+          border-bottom: none;
+          a {
+            color: #006285;
+
+            &:after {
+              transform: translateY(-26px);
+              opacity: 1;
+            }
+          }
+        }
 
         a {
-          padding: 0 20px;
-          color: $grey7;
+          &:before {
+            display: none;
+          }
+          &:after {
+            background: #006285;
+          }
+        }
+        &.ant-menu-item-selected {
+          a {
+            color: #006285;
+          }
+          &:hover {
+            a {
+              color: #006285;
+            }
+          }
         }
         &.icon {
-          a {
-            padding: 0 4px 0 10px;
+          padding: 0 4px 0 10px;
+          min-width: inherit;
+          @media (max-width: 380px) {
+            display: none;
+          }
+          &:hover {
+            a {
+              color: #e37c5f;
+            }
           }
           .anticon {
             font-size: 22px;
-            a {
-              color: $grey7;
-            }
-          }
-        }
-        &:hover {
-          border: none;
-          &.icon {
-            a {
-              color: $color2;
-            }
           }
         }
       }
+    }
+  }
+  @media (min-width: 380px) {
+    .mobile {
+      display: none;
+    }
+  }
+  .ant-menu-overflowed-submenu {
+    display: none !important;
+  }
+  .mobile {
+    padding: 16px 16px 0;
+    a {
+      padding: 0 4px 0 10px;
+      color: $grey7;
+    }
+    &:hover {
+      a {
+        color: #e37c5f;
+      }
+    }
+    .anticon {
+      font-size: 22px;
     }
   }
 

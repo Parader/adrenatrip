@@ -1,5 +1,4 @@
 import React from "react"
-import { Select } from "antd"
 import _ from "lodash"
 import classnames from "classnames"
 import InteractiveMap from "../components/interactiveMap"
@@ -8,14 +7,26 @@ import { PoweroffOutlined } from "@ant-design/icons"
 import queryString from "query-string"
 const { Search } = Input
 
-const { Option } = Select
-
 class Filters extends React.Component {
   constructor(props) {
     super(props)
 
     this.isFirstClickContinent = !props.location.search.includes("c=")
     this.isFirstClickCategorie = !props.location.search.includes("cat=")
+  }
+
+  componentDidMount() {
+    const { location } = this.props
+    if (location.href.includes("#") && location.href.includes("|")) {
+      const filter = location.href.split("#")[1]
+      const type = filter ? filter.split("|")[1] : ""
+      if (type === "i") {
+        this.isFirstClickCategorie = false
+      }
+      if (type === "g") {
+        this.isFirstClickContinent = false
+      }
+    }
   }
 
   handleSearchUpdate = e => {
@@ -27,6 +38,7 @@ class Filters extends React.Component {
 
   handleCategoryClick = (e, fromMap = false) => {
     const { currentFilters, tools } = this.props
+
     const type = fromMap
       ? e.getAttribute("data-filter")
       : e.target.getAttribute("data-filter")
@@ -75,7 +87,7 @@ class Filters extends React.Component {
           currentFilters={currentFilters}
         />
         <div className="filters">
-          <div className="keywords">
+          <div className="keywords fader" style={{ "--anim-order": "1" }}>
             <Search
               defaultValue={queryString.parse(location.search).s}
               placeholder="Recherche"
@@ -84,9 +96,9 @@ class Filters extends React.Component {
               style={{ width: 287 }}
             />
           </div>
-          <div className="continents">
+          <div className="continents fader" style={{ "--anim-order": "2" }}>
             {continents.map((cont, i) => {
-              const contClasses = classnames("tag", {
+              const contClasses = classnames("tag ", {
                 active:
                   currentFilters.continents.filter(
                     c => c.node.name === cont.node.name
@@ -110,7 +122,7 @@ class Filters extends React.Component {
               }}
             />
           </div>
-          <div className="categories">
+          <div className="categories fader" style={{ "--anim-order": "3" }}>
             {categories.map((cat, i) => {
               const catClasses = classnames("tag", {
                 active:

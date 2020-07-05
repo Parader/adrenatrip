@@ -1,7 +1,6 @@
 module.exports = {
   siteMetadata: {
     title: `Adrenatrip`,
-    description: `Traveling blog`,
     author: `@parader`,
   },
   plugins: [
@@ -55,7 +54,7 @@ module.exports = {
     {
       resolve: "gatsby-source-wordpress",
       options: {
-        baseUrl: "testapi.qcweb.ca", //process.env.WP_API_URL || 'exemple.com',
+        baseUrl: process.env.WP_API_URL || "exemple.com",
         protocol: "https",
         hostingWPCOM: false,
         useACF: true,

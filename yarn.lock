@@ -6003,6 +6003,10 @@ graphql@^14.6.0:
   dependencies:
     iterall "^1.2.2"
 
+gsap@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.3.1.tgz#f11b926c2c1891501209d78a00df48452a2681c8"
+
 gud@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
@@ -9596,7 +9600,7 @@ querystringify@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.1.1.tgz#60e5a5fd64a7f8bfa4d2ab2ed6fdf4c85bad154e"
 
-raf@^3.4.0, raf@^3.4.1:
+raf@^3.4.0, raf@^3.4.1, raf@~3.4.0:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
   dependencies:
@@ -9889,6 +9893,17 @@ rc-trigger@^4.0.0, rc-trigger@~4.1.0:
     rc-animate "^3.0.0"
     rc-util "^4.20.0"
 
+rc-tween-one@^2.7.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/rc-tween-one/-/rc-tween-one-2.7.2.tgz#e9a1ed2e3ab2e4c9c924d4be3a210f0928249016"
+  dependencies:
+    babel-runtime "6.x"
+    prop-types "^15.6.1"
+    raf "~3.4.0"
+    react-lifecycles-compat "^3.0.4"
+    style-utils "~0.2.0"
+    tween-functions "~1.2.0"
+
 rc-upload@~3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/rc-upload/-/rc-upload-3.0.4.tgz#5fd8ba9eefc1e466225240ae997404693d86fa09"
@@ -10068,6 +10083,12 @@ react-use@13.27.0:
     throttle-debounce "^2.1.0"
     ts-easing "^0.2.0"
     tslib "^1.10.0"
+
+react-visibility-sensor@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/react-visibility-sensor/-/react-visibility-sensor-5.1.1.tgz#5238380960d3a0b2be0b7faddff38541e337f5a9"
+  dependencies:
+    prop-types "^15.7.2"
 
 react@^16.12.0, react@^16.8.0:
   version "16.13.1"
@@ -11503,6 +11524,10 @@ style-to-object@^0.2.1:
   dependencies:
     inline-style-parser "0.1.1"
 
+style-utils@~0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/style-utils/-/style-utils-0.2.0.tgz#3d8614931b8ff6e1eea0545f1dbfaf271bb1aa7e"
+
 stylehacks@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/stylehacks/-/stylehacks-4.0.3.tgz#6718fcaf4d1e07d8a1318690881e8d96726a71d5"
@@ -11881,6 +11906,10 @@ tunnel-agent@^0.6.0:
   resolved "https://registry.yarnpkg.com/tunnel-agent/-/tunnel-agent-0.6.0.tgz#27a5dea06b36b04a0a9966774b290868f0fc40fd"
   dependencies:
     safe-buffer "^5.0.1"
+
+tween-functions@~1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/tween-functions/-/tween-functions-1.2.0.tgz#1ae3a50e7c60bb3def774eac707acbca73bbc3ff"
 
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
@@ -12296,10 +12325,6 @@ watchpack@^1.6.1:
     chokidar "^2.1.8"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-
-waypoints@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/waypoints/-/waypoints-4.0.1.tgz#09979a0573810b29627cba4366a284a062ec69c8"
 
 wbuf@^1.1.0, wbuf@^1.7.3:
   version "1.7.3"

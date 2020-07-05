@@ -1,17 +1,24 @@
 import React from "react"
-import { Link } from "gatsby"
+import { Link, navigate } from "gatsby"
 
-import Image from "../components/image"
 import SEO from "../components/seo"
-import { Button } from "antd"
 import Logo from "../components/logo"
 import Swiper from "swiper"
 import Img from "gatsby-image"
-import { LeftOutlined, RightOutlined } from "@ant-design/icons"
+import {
+  LeftOutlined,
+  RightOutlined,
+  MailOutlined,
+  DownOutlined,
+} from "@ant-design/icons"
 import * as basicScroll from "basicscroll"
 import classNames from "classnames"
 import getItemById from "../utils/getItemById"
 import getMonth from "../utils/getMonth"
+import DepthImage from "../components/depthImage"
+import gsap from "gsap"
+import VisibilitySensor from "react-visibility-sensor"
+import stripHtml from "../utils/stripHtml"
 
 class IndexPage extends React.Component {
   constructor(props) {
@@ -21,64 +28,31 @@ class IndexPage extends React.Component {
     this.swiperContainer = React.createRef()
     this.basicScrolls = []
     this.headerIsSticky = false
+    this.page = React.createRef()
+    this.buffer = 0
+    this.timeout = null
+
+    this.state = {
+      mapKey: Math.random().toString(),
+    }
   }
 
   componentDidMount() {
     this.articleSwiper = new Swiper(this.swiperContainer.current, {
       direction: "horizontal",
-      spaceBetween: 80,
+      spaceBetween: 20,
       slidesPerView: "auto",
       touche: true,
       navigation: {
         prevEl: ".swiper-button-prev",
         nextEl: ".swiper-button-next",
       },
+      breakpoints: {
+        420: {
+          spaceBetween: 80,
+        },
+      },
     })
-
-    // background opacity
-    this.basicScrolls.push(
-      basicScroll.create({
-        elem: document.querySelector(".background"),
-        from: window.innerHeight * 0.2,
-        to: window.innerHeight * 0.6,
-        props: {
-          "--opacity": {
-            from: 1,
-            to: 0,
-          },
-        },
-      })
-    )
-
-    // background-movement
-    this.basicScrolls.push(
-      basicScroll.create({
-        elem: document.querySelector(".bg-3"),
-        from: 0,
-        to: "400px",
-        props: {
-          "--top": {
-            from: 0,
-            to: "-40px",
-          },
-        },
-      })
-    )
-
-    // cloud movement
-    this.basicScrolls.push(
-      basicScroll.create({
-        elem: document.querySelector(".bg-1"),
-        from: 0,
-        to: window.innerHeight * 0.8,
-        props: {
-          "--top2": {
-            from: 0,
-            to: `-${window.innerHeight / 4}px`,
-          },
-        },
-      })
-    )
 
     // STICKY HEADER
     this.basicScrolls.push(
@@ -111,16 +85,50 @@ class IndexPage extends React.Component {
   handleCategoryClick = e => {
     e.stopPropagation()
     e.preventDefault()
-
-    this.props.navigate(e.target.getAttribute("href"))
+    navigate(
+      `/articles/${
+        e.target.getAttribute("href") !== null
+          ? e.target.getAttribute("href")
+          : e.target.closest("a").getAttribute("href")
+      }`
+    )
   }
 
   resizeWindow = () => {
     for (let i = 0; i < this.basicScrolls.length; i++) {
-      this.basicScrolls[i].calculate()
-      this.basicScrolls[i].update()
+      this.basicScrolls[i].destroy()
+      if (document.querySelector(".page-home")) {
+        this.basicScrolls[i] = basicScroll.create({
+          elem: document.querySelector("header"),
+          from: 0,
+          to: window.innerHeight - 70,
+          inside: () => {
+            if (this.headerIsSticky) {
+              document.querySelector("header").classList.add("home")
+              this.headerIsSticky = false
+            }
+          },
+          outside: () => {
+            if (!this.headerIsSticky) {
+              document.querySelector("header").classList.remove("home")
+              this.headerIsSticky = true
+            }
+          },
+        })
+        this.basicScrolls[i].start()
+      }
     }
     this.articleSwiper.update()
+
+    if (this.buffer === 0) {
+      if (document.querySelector(".page-home")) {
+        this.setState({ mapKey: Math.random().toString() })
+      }
+      this.buffer = 1
+      this.timeout = setTimeout(() => {
+        this.buffer = 0
+      }, 1000)
+    }
   }
 
   getContinents = () => {
@@ -143,77 +151,149 @@ class IndexPage extends React.Component {
     })
   }
 
+  isInView = e => {
+    const { scrollTop, offsetTop } = e
+    if (scrollTop < offsetTop) return
+
+    if (!e.faded) {
+      e.faded = true
+      gsap.to(document.getElementById(e.id), 0.2, { autoAlpha: 0 })
+    }
+  }
+
   componentWillUnmount() {
     for (let i = 0; i < this.basicScrolls.length; i++) {
       this.basicScrolls[i].destroy()
     }
+
     this.articleSwiper.destroy()
+    clearTimeout(this.timeout)
   }
 
   render() {
-    const { data } = this.props
+    const { data, location } = this.props
 
     const articles = data.allWordpressPost.edges
+    const email = data.wordpressAcfOptions.options.email
+    let counter = 0
 
     return (
-      <div className="page page-home">
-        <SEO title="Home" />
+      <div className="page page-home" ref={this.page}>
+        <SEO
+          title="Accueil"
+          location={location}
+          description={stripHtml(
+            data.wordpressPage.content.substring(0, 130) + "..."
+          )}
+        />
 
-        <section className="splash-screen">
-          <div className="home-logo">
-            <Logo />
+        <section className="splash-screen shade">
+          <DepthImage
+            image={data.file2}
+            depthmap={data.file}
+            key={this.state.mapKey}
+            resize={this.resizeWindow}
+          ></DepthImage>
+          <div className="content">
+            <VisibilitySensor partialVisibility>
+              {({ isVisible }) => {
+                return [
+                  <div
+                    className={classNames("home-logo fader", { isVisible })}
+                    style={{ "--anim-order": "1" }}
+                    key="0"
+                  >
+                    <Logo />
+                  </div>,
+                  <div
+                    className={classNames("headline fader", { isVisible })}
+                    style={{ "--anim-order": "2" }}
+                    key="1"
+                    dangerouslySetInnerHTML={{
+                      __html: data.wordpressAcfOptions.options.heading_text,
+                    }}
+                  ></div>,
+                  <div
+                    className={classNames("cta fader", { isVisible })}
+                    style={{ "--anim-order": "3" }}
+                    key="2"
+                  >
+                    <Link to={`/articles/${articles[0].node.slug}`}>
+                      Lire l'article le plus récent
+                    </Link>
+                  </div>,
+                  <div className={classNames(" fader", { isVisible })} key="3">
+                    <div className="go-down">
+                      <DownOutlined />
+                    </div>
+                  </div>,
+                ]
+              }}
+            </VisibilitySensor>
           </div>
-
-          <div className="background bg-1"></div>
-          <div className="headline">
-            <h1>Un blog de voyage pour raconter mes trips</h1>
-            <p>moi c'est Mélanie</p>
-          </div>
-          <div className="cta">
-            <Link to={`/articles/${articles[0].node.slug}`}>
-              Lire l'article le plus récent
-            </Link>
-          </div>
-          <div className="background bg-2"></div>
-          <div className="background bg-3"></div>
         </section>
 
         <section className="slider articles-slider">
-          <h2>Articles</h2>
+          <VisibilitySensor>
+            {({ isVisible }) => {
+              const classes = classNames("fader shade", {
+                isVisible: isVisible || counter > 0,
+              })
+              if (isVisible && counter < 1) {
+                counter = 1
+              }
+              return (
+                <h2
+                  className={classes}
+                  onClick={() => {
+                    navigate("/articles")
+                  }}
+                >
+                  Articles
+                </h2>
+              )
+            }}
+          </VisibilitySensor>
           <div className="swiper-container" ref={this.swiperContainer}>
             <div className="swiper-wrapper">
               {articles.map((a, i) => {
                 a = a.node
                 const date = a.date.split("/")
                 return (
-                  <article className="swiper-slide" key={`articles-slide-${i}`}>
+                  <article
+                    className="swiper-slide"
+                    key={`articles-slide-${i}`}
+                    style={{ "--anim-order": i }}
+                  >
                     <Link to={`/articles/${a.slug}`}>
-                      <div className="thumbnail">
+                      <div className="thumbnail shade">
                         <Img
-                          fixed={
-                            a.acf.featured_image.localFile.childImageSharp.fixed
+                          fluid={
+                            a.acf.featured_image.localFile.childImageSharp.fluid
                           }
                         />
                       </div>
-                      <div className="content">
-                        <h4 title={a.title}>{a.title}</h4>
+                      <div className="content shade">
+                        <h4 title={a.title}>{`${a.title.substring(0, 36)}${
+                          a.title.length > 36 ? "..." : ""
+                        }`}</h4>
                         <p>{`${date[0]} ${getMonth(date[1])} ${date[2]}`}</p>
                       </div>
                     </Link>
-                    <div className="tags">
+                    <div className="tags shade">
                       {a.categories.map((c, j) => {
                         const cat = getItemById(
                           c.id,
                           data.allWordpressCategory.edges
                         )
-                        if (cat.wordpress_parent !== 0) return
-                        if (cat.acf === null) return
+                        if (cat.wordpress_parent !== 0) return null
+                        if (cat.acf === null) return null
                         const catClasses = classNames("tag", cat.acf.type)
                         return (
                           <div
-                            href={`/articles?${
-                              cat.acf.type === "informatif" ? "cat" : "c"
-                            }=${cat.slug}`}
+                            href={`#${cat.slug}|${
+                              cat.acf.type === "informatif" ? "i" : "g"
+                            }`}
                             className={catClasses}
                             key={`articles-slide-${i}-cat-${j}`}
                             onClick={this.handleCategoryClick}
@@ -228,39 +308,81 @@ class IndexPage extends React.Component {
               })}
             </div>
 
-            <div className="swiper-button-prev">
+            <div className="swiper-button-prev shade">
               <LeftOutlined />
             </div>
-            <div className="swiper-button-next active">
+            <div className="swiper-button-next active shade">
               <RightOutlined />
             </div>
           </div>
         </section>
+        <VisibilitySensor partialVisibility>
+          {({ isVisible }) => {
+            const classes = classNames("about fader shade", {
+              isVisible: isVisible || counter > 1,
+            })
 
-        <section className="about">
-          <div className="content">
-            <h2
-              dangerouslySetInnerHTML={{ __html: data.wordpressPage.title }}
-            ></h2>
-            <span
-              dangerouslySetInnerHTML={{ __html: data.wordpressPage.content }}
-            ></span>
-          </div>
-          <div className="picture">
-            <Img
-              fluid={
-                data.wordpressPage.acf.picture.localFile.childImageSharp.fluid
+            if (isVisible && counter < 2) {
+              counter = 2
+            }
+            return (
+              <section className={classes}>
+                <div className="content">
+                  <h2
+                    dangerouslySetInnerHTML={{
+                      __html: data.wordpressPage.title,
+                    }}
+                  ></h2>
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: data.wordpressPage.content,
+                    }}
+                  ></span>
+                  <div className="cta">
+                    <a href={`mailto:${email}`}>
+                      Contacter Mélanie <MailOutlined />
+                    </a>
+                  </div>
+                </div>
+                <div className="picture">
+                  <Img
+                    fluid={
+                      data.wordpressPage.acf.picture.localFile.childImageSharp
+                        .fluid
+                    }
+                  />
+                </div>
+              </section>
+            )
+          }}
+        </VisibilitySensor>
+
+        <section className="section-categories shade">
+          <VisibilitySensor partialVisibility="bottom">
+            {({ isVisible }) => {
+              const classes = classNames("fader", {
+                isVisible: isVisible || counter > 2,
+              })
+
+              if (isVisible && counter < 3) {
+                counter = 3
               }
-            />
-          </div>
-        </section>
-
-        <section className="section-categories">
-          <h3>Continents</h3>
+              return <h3 className={classes}>Continents</h3>
+            }}
+          </VisibilitySensor>
           <div className="continents">
             {this.getContinents().map((c, i) => {
+              if (!c.node.acf) return null
               return (
-                <div className="continent" key={`categories-continent-${i}`}>
+                <a
+                  className="continent"
+                  key={`categories-continent-${i}`}
+                  style={{ "--anim-order": i }}
+                  onClick={this.handleCategoryClick}
+                  href={`#${c.node.slug}|${
+                    c.node.acf.type === "informatif" ? "i" : "g"
+                  }`}
+                >
                   <div className="overlay"></div>
                   <div className="thumbnail">
                     <Img
@@ -269,29 +391,50 @@ class IndexPage extends React.Component {
                       }
                     />
                   </div>
-                  <h5>{c.node.name}</h5>
-                </div>
+                  <span>
+                    <h5>{c.node.name}</h5>
+                  </span>
+                </a>
               )
             })}
           </div>
-          <h3 className="text-center">Categories</h3>
-          <div className="others">
-            <div className="categories">
-              {this.getCategories().map((c, i) => {
-                return (
-                  <div className="categorie" key={`categories-categ-${i}`}>
-                    <div className="thumbnail">
-                      <Img
-                        fluid={
-                          c.node.acf.thumbnail.localFile.childImageSharp.fluid
-                        }
-                      />
-                    </div>
-                    <h5>{c.node.name}</h5>
+          <VisibilitySensor>
+            {({ isVisible }) => {
+              const classes = classNames("text-center cat fader", {
+                isVisible: isVisible || counter > 3,
+              })
+
+              if (isVisible && counter < 4) {
+                counter = 4
+              }
+              return <h3 className={classes}>Categories</h3>
+            }}
+          </VisibilitySensor>
+          <div className="categories">
+            {this.getCategories().map((c, i) => {
+              if (!c.node.acf || !c.node.acf.thumbnail) return null
+
+              return (
+                <a
+                  className="categorie"
+                  key={`categories-categ-${i}`}
+                  style={{ "--anim-order": i }}
+                  onClick={this.handleCategoryClick}
+                  href={`#${c.node.slug}|${
+                    c.node.acf.type === "informatif" ? "i" : "g"
+                  }`}
+                >
+                  <div className="thumbnail">
+                    <Img
+                      fluid={
+                        c.node.acf.thumbnail.localFile.childImageSharp.fluid
+                      }
+                    />
                   </div>
-                )
-              })}
-            </div>
+                  <h5>{c.node.name}</h5>
+                </a>
+              )
+            })}
           </div>
         </section>
       </div>
@@ -320,8 +463,8 @@ export const HomeQuery = graphql`
               localFile {
                 name
                 childImageSharp {
-                  fixed(width: 680) {
-                    ...GatsbyImageSharpFixed
+                  fluid(maxWidth: 680, maxHeight: 520, fit: COVER) {
+                    ...GatsbyImageSharpFluid
                   }
                 }
               }
@@ -366,6 +509,41 @@ export const HomeQuery = graphql`
               }
             }
           }
+        }
+      }
+    }
+    wordpressAcfOptions {
+      options {
+        email
+        heading_text
+      }
+    }
+
+    file(name: { eq: "depthmap6" }) {
+      name
+      absolutePath
+      childImageSharp {
+        fluid(quality: 100) {
+          base64
+          tracedSVG
+          srcWebp
+          srcSetWebp
+          originalImg
+          originalName
+        }
+      }
+    }
+    file2: file(name: { eq: "home-bg" }) {
+      name
+      absolutePath
+      childImageSharp {
+        fluid(quality: 100) {
+          base64
+          tracedSVG
+          srcWebp
+          srcSetWebp
+          originalImg
+          originalName
         }
       }
     }

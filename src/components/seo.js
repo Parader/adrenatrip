@@ -10,23 +10,39 @@ import PropTypes from "prop-types"
 import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
 
-function SEO({ description, lang, meta, title }) {
-  const { site } = useStaticQuery(
+function SEO({
+  description,
+  lang,
+  meta,
+  title,
+  type = "blog",
+  location,
+  image,
+}) {
+  const { site, metaImage } = useStaticQuery(
     graphql`
       query {
         site {
           siteMetadata {
             title
-            description
-            author
+          }
+        }
+        metaImage: file(name: { eq: "meta_image" }) {
+          name
+          childImageSharp {
+            fluid(quality: 100) {
+              originalImg
+            }
           }
         }
       }
     `
   )
 
-  const metaDescription = description || site.siteMetadata.description
-
+  const metaDescription = description
+  if (location.href && location.href.includes("/articles/")) {
+    type = "article"
+  }
   return (
     <Helmet
       htmlAttributes={{
@@ -40,6 +56,14 @@ function SEO({ description, lang, meta, title }) {
           content: metaDescription,
         },
         {
+          property: `og:type`,
+          content: type,
+        },
+        {
+          property: `og:url`,
+          content: location.href,
+        },
+        {
           property: `og:title`,
           content: title,
         },
@@ -48,16 +72,18 @@ function SEO({ description, lang, meta, title }) {
           content: metaDescription,
         },
         {
-          property: `og:type`,
-          content: `website`,
+          property: `og:image`,
+          content: `${location.origin}${
+            image ? image : metaImage.childImageSharp.fluid.originalImg
+          }`,
         },
         {
           name: `twitter:card`,
-          content: `summary`,
+          content: `summary_large_image`,
         },
         {
-          name: `twitter:creator`,
-          content: site.siteMetadata.author,
+          name: `twitter:url`,
+          content: location.href,
         },
         {
           name: `twitter:title`,
@@ -66,6 +92,12 @@ function SEO({ description, lang, meta, title }) {
         {
           name: `twitter:description`,
           content: metaDescription,
+        },
+        {
+          name: `twitter:image`,
+          content: `${location.origin}${
+            image ? image : metaImage.childImageSharp.fluid.originalImg
+          }`,
         },
       ].concat(meta)}
     />
