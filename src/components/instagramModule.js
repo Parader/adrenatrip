@@ -24,7 +24,10 @@ class InstagramModule extends React.Component {
           <StaticQuery
             query={graphql`
               query instaQuery {
-                allInstaNode {
+                allInstaNode(
+                  limit: 12
+                  sort: { fields: [timestamp], order: DESC }
+                ) {
                   edges {
                     node {
                       id

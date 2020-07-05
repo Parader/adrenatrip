@@ -5524,9 +5524,9 @@ gatsby-source-filesystem@^2.2.4, gatsby-source-filesystem@^2.3.18:
     valid-url "^1.0.9"
     xstate "^4.11.0"
 
-gatsby-source-instagram@^0.7.0:
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/gatsby-source-instagram/-/gatsby-source-instagram-0.7.2.tgz#302960ecf1c3c931b2395c180fe0272f092adc2c"
+gatsby-source-instagram@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/gatsby-source-instagram/-/gatsby-source-instagram-0.8.0.tgz#d484eb9302cb9f2c8ab32ee2e99a9fad19725d11"
   dependencies:
     axios "^0.19.0"
 
