@@ -1,5 +1,5 @@
 import React from "react"
-import { Link, navigate } from "gatsby"
+import { Link, navigate, graphql } from "gatsby"
 
 import Filters from "../components/filters"
 import SEO from "../components/seo"
