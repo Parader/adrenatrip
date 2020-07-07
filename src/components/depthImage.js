@@ -158,11 +158,6 @@ class DepthImage extends React.Component {
   render() {
     return (
       <>
-        <TweenOne
-          className="loading-overlay"
-          animation={{ opacity: 0, delay: 150, duration: 300 }}
-          paused={this.state.paused}
-        ></TweenOne>
         <div className="depth-image" ref={this.container}></div>
       </>
     )

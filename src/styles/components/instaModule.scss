@@ -1,12 +1,17 @@
 .instagram-module {
   max-width: 100vw;
   text-align: center;
-  min-height: 100vh;
-  height: 60vw;
+  min-height: 110vh;
+  height: 60vh;
   position: relative;
   margin: 300px 0 0;
   @media (max-width: 1280px) {
     min-height: 78vh;
+  }
+
+  @media (max-width: 1080px) {
+    position: static;
+    height: inherit;
   }
   @media (max-width: 560px) {
     margin: 200px 0 300px;
@@ -28,8 +33,8 @@
     @media (max-width: 1280px) {
       min-height: 643px;
     }
-    @media (max-width: 560px) {
-      min-height: 589px;
+    @media (max-width: 1080px) {
+      min-height: 330px;
     }
     .content {
       padding-bottom: 16px;
@@ -120,6 +125,12 @@
     position: absolute;
     width: 100%;
     height: 100%;
+    top: 0;
+    min-height: 830px;
+    @media (max-width: 1080px) {
+      position: static;
+      overflow-x: scroll;
+    }
     .gallery {
       position: relative;
       width: 100%;
@@ -163,10 +174,11 @@
           @media (max-width: 1080px) {
             width: 40vw;
             height: 26vw;
-          }
-          @media (max-width: 560px) {
-            width: 80vw;
-            height: 52vw;
+
+            @media (max-width: 1080px) {
+              width: 380px;
+              height: 247px;
+            }
           }
         }
         .caption {
@@ -182,12 +194,8 @@
           justify-content: space-between;
           color: $grey8;
           @media (max-width: 1080px) {
-            top: 26.8vw;
-            width: 38vw;
-          }
-          @media (max-width: 560px) {
-            top: 53.6vw;
-            width: 76vw;
+            top: 252px;
+            width: 380px;
           }
           p {
             max-width: 250px;
@@ -211,24 +219,16 @@
             width: 12vw;
             height: 15vw;
             @media (max-width: 1080px) {
-              width: 24vw;
-              height: 30vw;
-            }
-            @media (max-width: 560px) {
-              width: 48vw;
-              height: 60vw;
+              width: 247px;
+              height: 310px;
             }
           }
           .caption {
             top: 16vw;
             width: 12.5vw;
             @media (max-width: 1080px) {
-              top: 32vw;
-              width: 25vw;
-            }
-            @media (max-width: 560px) {
-              top: 64vw;
-              width: 50vw;
+              top: 320px;
+              width: 247px;
             }
           }
         }
@@ -236,48 +236,52 @@
       .pic-0 {
         left: 77%;
         bottom: 11%;
+
+        @media (max-width: 1080px) {
+          top: 0;
+          left: 0;
+        }
       }
       .pic-1 {
         left: 66%;
         top: 30%;
+
         @media (max-width: 1080px) {
-          left: 73%;
-        }
-        @media (max-width: 560px) {
-          left: 53%;
-          top: 84%;
+          left: 300px;
+          top: 330px;
         }
       }
       .pic-2 {
         left: 86%;
         top: 40%;
+        @media (max-width: 1080px) {
+          left: 600px;
+          top: 20px;
+        }
       }
       .pic-3 {
         left: 84%;
         top: -10%;
+        @media (max-width: 1080px) {
+          left: 680px;
+          top: 360px;
+        }
       }
       .pic-4 {
         top: -40px;
         left: 80px;
+
         @media (max-width: 1080px) {
-          top: -30px;
-          left: -180px;
-        }
-        @media (max-width: 560px) {
-          display: none;
+          left: 1000px;
+          top: 370px;
         }
       }
       .pic-5 {
         left: 60%;
         top: -20%;
-
         @media (max-width: 1080px) {
-          left: 85%;
-          top: -32%;
-        }
-        @media (max-width: 560px) {
-          left: 61%;
-          top: -32%;
+          left: 1100px;
+          top: 0;
         }
       }
       .pic-6 {
@@ -285,30 +289,25 @@
         top: 70%;
 
         @media (max-width: 1080px) {
-          left: 78%;
-          top: 91%;
-        }
-        @media (max-width: 560px) {
-          top: -144px;
-          left: -180px;
+          left: 1470px;
+          top: 60%;
         }
       }
       .pic-7 {
         left: 25%;
         top: 64%;
-
         @media (max-width: 1080px) {
-          left: 28%;
-          top: 78%;
-        }
-        @media (max-width: 560px) {
-          left: -9%;
-          top: 92%;
+          left: 1750px;
+          top: 300px;
         }
       }
       .pic-8 {
         left: -80px;
         top: 70%;
+        @media (max-width: 1080px) {
+          left: 2000px;
+          top: 10px;
+        }
       }
       .pic-9 {
         left: 35%;
@@ -318,26 +317,24 @@
           top: -10px;
         }
         @media (max-width: 1080px) {
-          left: 35%;
-          top: -126px;
-        }
-        @media (max-width: 560px) {
-          display: none;
+          left: 2200px;
+          top: 350px;
         }
         &.odd .gatsby-image-wrapper {
           width: 19.5vw;
           height: 13vw;
           @media (max-width: 1080px) {
-            width: 38vw;
-            height: 26vw;
+            width: 247px;
+            height: 310px;
           }
         }
         .caption {
           top: 13.4vw !important;
           width: 19.5vw !important;
+
           @media (max-width: 1080px) {
-            top: 26.8vw !important;
-            width: 38vw !important;
+            top: 320px !important;
+            width: 247px !important;
           }
         }
       }
@@ -349,25 +346,17 @@
         }
 
         @media (max-width: 1080px) {
-          left: -25%;
-          top: 52%;
-        }
-        @media (max-width: 560px) {
-          display: none;
+          left: 2530px;
+          top: 370px;
         }
       }
       .pic-11 {
         left: -150px;
         top: 31%;
-      }
 
-      @media (max-width: 1080px) {
-        .pic-11,
-        .pic-8,
-        .pic-3,
-        .pic-2,
-        .pic-0 {
-          display: none;
+        @media (max-width: 1080px) {
+          left: 2600px;
+          top: 0px;
         }
       }
     }

@@ -35,9 +35,14 @@ class IndexPage extends React.Component {
     this.state = {
       mapKey: Math.random().toString(),
     }
+
+    this.windowWidth = null
   }
 
   componentDidMount() {
+    if (typeof window !== "undefined") {
+      this.windowWidth = window.innerWidth
+    }
     this.articleSwiper = new Swiper(this.swiperContainer.current, {
       direction: "horizontal",
       spaceBetween: 20,
@@ -95,39 +100,42 @@ class IndexPage extends React.Component {
   }
 
   resizeWindow = () => {
-    for (let i = 0; i < this.basicScrolls.length; i++) {
-      this.basicScrolls[i].destroy()
-      if (document.querySelector(".page-home")) {
-        this.basicScrolls[i] = basicScroll.create({
-          elem: document.querySelector("header"),
-          from: 0,
-          to: window.innerHeight - 70,
-          inside: () => {
-            if (this.headerIsSticky) {
-              document.querySelector("header").classList.add("home")
-              this.headerIsSticky = false
-            }
-          },
-          outside: () => {
-            if (!this.headerIsSticky) {
-              document.querySelector("header").classList.remove("home")
-              this.headerIsSticky = true
-            }
-          },
-        })
-        this.basicScrolls[i].start()
+    if (this.windowWidth !== window.innerWidth) {
+      this.windowWidth = window.innerWidth
+      for (let i = 0; i < this.basicScrolls.length; i++) {
+        this.basicScrolls[i].destroy()
+        if (document.querySelector(".page-home")) {
+          this.basicScrolls[i] = basicScroll.create({
+            elem: document.querySelector("header"),
+            from: 0,
+            to: window.innerHeight - 70,
+            inside: () => {
+              if (this.headerIsSticky) {
+                document.querySelector("header").classList.add("home")
+                this.headerIsSticky = false
+              }
+            },
+            outside: () => {
+              if (!this.headerIsSticky) {
+                document.querySelector("header").classList.remove("home")
+                this.headerIsSticky = true
+              }
+            },
+          })
+          this.basicScrolls[i].start()
+        }
       }
-    }
-    this.articleSwiper.update()
+      this.articleSwiper.update()
 
-    if (this.buffer === 0) {
-      if (document.querySelector(".page-home")) {
-        this.setState({ mapKey: Math.random().toString() })
+      if (this.buffer === 0) {
+        if (document.querySelector(".page-home")) {
+          this.setState({ mapKey: Math.random().toString() })
+        }
+        this.buffer = 1
+        this.timeout = setTimeout(() => {
+          this.buffer = 0
+        }, 1000)
       }
-      this.buffer = 1
-      this.timeout = setTimeout(() => {
-        this.buffer = 0
-      }, 1000)
     }
   }
 

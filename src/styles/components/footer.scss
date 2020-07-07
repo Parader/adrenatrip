@@ -40,9 +40,11 @@ footer {
   }
 
   nav.footer-menu {
+    text-align: center;
     ul {
       background: none;
       border-bottom: none;
+      text-align: center;
       li.ant-menu-item {
         border-bottom: none;
         min-width: 110px;

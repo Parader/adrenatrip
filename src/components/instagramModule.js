@@ -20,6 +20,13 @@ class InstagramModule extends React.Component {
             return <div className={classes} style={{ height: "1px" }}></div>
           }}
         </VisibilitySensor>
+
+        <div className="front">
+          <div
+            className="content"
+            dangerouslySetInnerHTML={{ __html: options.news_band_text }}
+          ></div>
+        </div>
         <div className="back">
           <StaticQuery
             query={graphql`
@@ -85,12 +92,6 @@ class InstagramModule extends React.Component {
               )
             }}
           />
-        </div>
-        <div className="front">
-          <div
-            className="content"
-            dangerouslySetInnerHTML={{ __html: options.news_band_text }}
-          ></div>
         </div>
       </div>
     )

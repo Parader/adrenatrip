@@ -107,7 +107,8 @@
         color: $grey7;
         transition: color 200ms ease-out;
         position: relative;
-        top: -5px;
+        min-height: 22px;
+        margin-bottom: 4px;
         &:hover {
           color: $grey8;
         }
