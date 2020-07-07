@@ -176,6 +176,7 @@ class IndexPage extends React.Component {
 
     this.articleSwiper.destroy()
     clearTimeout(this.timeout)
+    window.onresize = null
   }
 
   render() {
