@@ -513,7 +513,7 @@ export const ArticlesQuery = graphql`
                 name
                 childImageSharp {
                   fixed(width: 380) {
-                    ...GatsbyImageSharpFixed
+                    ...GatsbyImageSharpFixed_withWebp
                   }
                 }
               }
@@ -543,7 +543,7 @@ export const ArticlesQuery = graphql`
                 name
                 childImageSharp {
                   fluid(maxWidth: 680) {
-                    ...GatsbyImageSharpFluid
+                    ...GatsbyImageSharpFluid_withWebp
                   }
                 }
               }

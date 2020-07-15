@@ -35,7 +35,12 @@ class DepthImage extends React.Component {
 
       depth.srcSet = depthmap.childImageSharp.fluid.srcSetWebp
       depth.src = depthmap.childImageSharp.fluid.originalImg
-      await new Promise(r => (depth.onload = r))
+      await new Promise(r => {
+        return (depth.onload = () => {
+          this.toggleAdvancedBackground()
+          r()
+        })
+      })
 
       this.canvas = document.createElement("canvas")
       this.canvas.height = height
@@ -148,7 +153,13 @@ class DepthImage extends React.Component {
 
       loop()
     }
-    if (this.container.current) init()
+    if (typeof window !== "undefined" && window.innerWidth > 1160) {
+      if (this.container.current) init()
+    }
+  }
+
+  toggleAdvancedBackground = () => {
+    document.querySelector(".depth-image-image").classList.add("fadeOut")
   }
 
   componentWillUnmount() {

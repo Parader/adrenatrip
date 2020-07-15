@@ -41,11 +41,11 @@ class InstagramModule extends React.Component {
                       caption
                       localFile {
                         childImageSharp {
-                          fluid(maxWidth: 500) {
-                            ...GatsbyImageSharpFluid
+                          fluid(maxWidth: 384) {
+                            ...GatsbyImageSharpFluid_withWebp
                           }
-                          grayscale: fluid(maxWidth: 500, grayscale: true) {
-                            ...GatsbyImageSharpFluid
+                          grayscale: fluid(maxWidth: 384, grayscale: true) {
+                            ...GatsbyImageSharpFluid_withWebp
                           }
                         }
                       }

@@ -8,7 +8,6 @@ import { Layout, Breadcrumb } from "antd"
 import InstagramModule from "../components/instagramModule"
 import PostFooter from "../components/postFooter"
 import { DiscussionEmbed } from "disqus-react"
-import TweenOne from "rc-tween-one"
 import getMonth from "../utils/getMonth"
 import SEO from "../components/seo"
 import stripHtml from "../utils/stripHtml"
@@ -158,83 +157,61 @@ class PostTemplate extends React.Component {
           }
         />
         <Content className="content-wrapper">
-          <TweenOne animation={fadeIn} style={{ opacity: 0 }}>
-            {hasCover && (
-              <div className="post-cover">
-                <Img
-                  fluid={
-                    data.wordpressPost.acf.featured_image.localFile
-                      .childImageSharp.fluid
-                  }
-                  alt={data.wordpressPost.acf.featured_image.alt_text}
-                />
-              </div>
-            )}
-          </TweenOne>
-          <TweenOne
-            animation={fadeIn}
-            style={{ transform: "translateY(10px)", opacity: 0, delay: 600 }}
-          >
-            <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item>
-                {" "}
-                <Link to="/articles"> Articles</Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>{currentPost.title}</Breadcrumb.Item>
-            </Breadcrumb>
-          </TweenOne>
-          <div className="post-content">
-            <TweenOne
-              animation={{ ...fadeIn, delay: 300 }}
-              style={{ transform: "translateY(10px)", opacity: 0 }}
-            >
-              <h1
-                className="title"
-                dangerouslySetInnerHTML={{ __html: currentPost.title }}
+          {hasCover && (
+            <div className="post-cover fade-in" style={{ "--anim-order": "0" }}>
+              <Img
+                fluid={
+                  data.wordpressPost.acf.featured_image.localFile
+                    .childImageSharp.fluid
+                }
+                alt={data.wordpressPost.acf.featured_image.alt_text}
               />
-              <p className="date">{`${date[0]} ${getMonth(date[1])} ${
-                date[2]
-              }`}</p>
-            </TweenOne>
-            <div className="categories">
+            </div>
+          )}
+          <Breadcrumb
+            className="breadcrumb fade-in"
+            style={{ "--anim-order": "1" }}
+          >
+            <Breadcrumb.Item>
+              <Link to="/articles"> Articles</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>{currentPost.title}</Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="post-content">
+            <h1
+              className="title fade-in"
+              style={{ "--anim-order": "2" }}
+              dangerouslySetInnerHTML={{ __html: currentPost.title }}
+            />
+            <p className="date fade-in" style={{ "--anim-order": "3" }}>
+              {" "}
+              {`${date[0]} ${getMonth(date[1])} ${date[2]}`}
+            </p>
+            <div className="categories fade-in" style={{ "--anim-order": "4" }}>
               {categories.map((c, i) => {
                 if (c.wordpress_parent !== 0) return null
                 if (c.acf === null) return null
                 const catClasses = classNames("category", c.acf.type)
                 return (
-                  <TweenOne
-                    animation={{
-                      x: 0,
-                      opacity: 1,
-                      duration: 200,
-                      delay: 500 + 100 * i,
-                      ease: "easeInOutQuad",
-                    }}
-                    style={{ transform: "translateX(10px)", opacity: 0 }}
+                  <a
+                    href={`#${c.slug}|${
+                      c.acf.type === "informatif" ? "i" : "g"
+                    }`}
+                    className={catClasses}
+                    onClick={this.handleCategoryClick}
                     key={`article-categ-${i}`}
                   >
-                    <a
-                      href={`#${c.slug}|${
-                        c.acf.type === "informatif" ? "i" : "g"
-                      }`}
-                      className={catClasses}
-                      onClick={this.handleCategoryClick}
-                    >
-                      {c.name}
-                    </a>
-                  </TweenOne>
+                    {c.name}
+                  </a>
                 )
               })}
             </div>{" "}
-            <TweenOne
-              animation={{ ...fadeIn, delay: 900 }}
-              style={{ transform: "translateY(8px)", opacity: 0 }}
-            >
-              <div
-                ref={this.content}
-                dangerouslySetInnerHTML={{ __html: content }}
-              />
-            </TweenOne>
+            <div
+              ref={this.content}
+              dangerouslySetInnerHTML={{ __html: content }}
+              className="fade-in"
+              style={{ "--anim-order": "5" }}
+            />
             <PostFooter
               handleCategoryClick={this.handleCategoryClick}
               currentPost={{ url: location.href, categories }}
@@ -246,7 +223,7 @@ class PostTemplate extends React.Component {
               }
             />
             <DiscussionEmbed
-              shortname={"adrenatrip"}
+              shortname={"adrenatrip-1"}
               config={{
                 identifier: currentPost.slug,
                 title: currentPost.title,
@@ -295,7 +272,7 @@ export const postQuery = graphql`
             name
             childImageSharp {
               fluid(maxWidth: 680, maxHeight: 520, fit: COVER) {
-                ...GatsbyImageSharpFluid
+                ...GatsbyImageSharpFluid_withWebp
               }
             }
           }
@@ -305,7 +282,7 @@ export const postQuery = graphql`
             name
             childImageSharp {
               fluid(maxWidth: 1920) {
-                ...GatsbyImageSharpFluid
+                ...GatsbyImageSharpFluid_withWebp
                 presentationWidth
               }
             }
@@ -333,8 +310,8 @@ export const postQuery = graphql`
         featured_image {
           localFile {
             childImageSharp {
-              fixed(width: 680) {
-                ...GatsbyImageSharpFixed
+              fixed(width: 380) {
+                ...GatsbyImageSharpFixed_withWebp
               }
             }
           }

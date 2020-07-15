@@ -7,15 +7,22 @@
     width: 100%;
     top: 0;
     position: relative;
-    .loading-overlay {
+    .depth-image-image {
       position: absolute;
-      width: 100%;
-      background: #fff;
+      min-width: 100vw;
+      min-height: 100vh;
       top: 0;
-      left: 0;
-      z-index: 1;
-      height: 120vh;
       transition: opacity 200ms ease-out;
+      &.fadeOut {
+        opacity: 0;
+      }
+      .gatsby-image-wrapper {
+        max-width: inherit;
+        max-height: inherit;
+        margin: 0;
+        transform: scaleX(-1);
+        height: 100vh;
+      }
     }
     .depth-image {
       position: absolute;
@@ -48,9 +55,7 @@
       justify-content: space-between;
       z-index: 60;
       > div {
-        animation-delay: calc(var(--anim-order) * 100ms);
-        transition: opacity 200ms ease-out;
-        animation-fill-mode: both;
+        animation-delay: calc(var(--anim-order) * 50ms);
       }
     }
 

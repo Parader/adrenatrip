@@ -48,6 +48,8 @@ class IndexPage extends React.Component {
       spaceBetween: 20,
       slidesPerView: "auto",
       touche: true,
+      preloadImages: false,
+      lazy: true,
       navigation: {
         prevEl: ".swiper-button-prev",
         nextEl: ".swiper-button-next",
@@ -159,16 +161,6 @@ class IndexPage extends React.Component {
     })
   }
 
-  isInView = e => {
-    const { scrollTop, offsetTop } = e
-    if (scrollTop < offsetTop) return
-
-    if (!e.faded) {
-      e.faded = true
-      gsap.to(document.getElementById(e.id), 0.2, { autoAlpha: 0 })
-    }
-  }
-
   componentWillUnmount() {
     for (let i = 0; i < this.basicScrolls.length; i++) {
       this.basicScrolls[i].destroy()
@@ -202,43 +194,46 @@ class IndexPage extends React.Component {
             depthmap={data.file}
             key={this.state.mapKey}
             resize={this.resizeWindow}
+            toggleAdvancedBackground={this.toggleAdvancedBackground}
           ></DepthImage>
+
+          <div className={`depth-image-image`}>
+            <Img
+              key={this.state.mapKey}
+              fluid={data.file2.childImageSharp.fluid}
+            />
+          </div>
+
           <div className="content">
-            <VisibilitySensor partialVisibility>
-              {({ isVisible }) => {
-                return [
-                  <div
-                    className={classNames("home-logo fader", { isVisible })}
-                    style={{ "--anim-order": "1" }}
-                    key="0"
-                  >
-                    <Logo />
-                  </div>,
-                  <div
-                    className={classNames("headline fader", { isVisible })}
-                    style={{ "--anim-order": "2" }}
-                    key="1"
-                    dangerouslySetInnerHTML={{
-                      __html: data.wordpressAcfOptions.options.heading_text,
-                    }}
-                  ></div>,
-                  <div
-                    className={classNames("cta fader", { isVisible })}
-                    style={{ "--anim-order": "3" }}
-                    key="2"
-                  >
-                    <Link to={`/articles/${articles[0].node.slug}`}>
-                      Lire l'article le plus récent
-                    </Link>
-                  </div>,
-                  <div className={classNames(" fader", { isVisible })} key="3">
-                    <div className="go-down">
-                      <DownOutlined />
-                    </div>
-                  </div>,
-                ]
+            <div
+              className={"home-logo fade-in"}
+              style={{ "--anim-order": "1" }}
+              key="0"
+            >
+              <Logo />
+            </div>
+            <div
+              className={"headline fade-in"}
+              style={{ "--anim-order": "2" }}
+              key="1"
+              dangerouslySetInnerHTML={{
+                __html: data.wordpressAcfOptions.options.heading_text,
               }}
-            </VisibilitySensor>
+            ></div>
+            <div
+              className={"cta fade-in"}
+              style={{ "--anim-order": "3" }}
+              key="2"
+            >
+              <Link to={`/articles/${articles[0].node.slug}`}>
+                Lire l'article le plus récent
+              </Link>
+            </div>
+            <div className={" fade-in"} key="3">
+              <div className="go-down">
+                <DownOutlined />
+              </div>
+            </div>
           </div>
         </section>
 
@@ -268,6 +263,7 @@ class IndexPage extends React.Component {
               {articles.map((a, i) => {
                 a = a.node
                 const date = a.date.split("/")
+
                 return (
                   <article
                     className="swiper-slide"
@@ -280,7 +276,9 @@ class IndexPage extends React.Component {
                           fluid={
                             a.acf.featured_image.localFile.childImageSharp.fluid
                           }
+                          className="swiper-lazy"
                         />
+                        <div className="swiper-lazy-preloader"></div>
                       </div>
                       <div className="content shade">
                         <h4 title={a.title}>{`${a.title.substring(0, 36)}${
@@ -472,8 +470,8 @@ export const HomeQuery = graphql`
               localFile {
                 name
                 childImageSharp {
-                  fluid(maxWidth: 680, maxHeight: 520, fit: COVER) {
-                    ...GatsbyImageSharpFluid
+                  fluid(maxWidth: 450, maxHeight: 344, fit: COVER) {
+                    ...GatsbyImageSharpFluid_withWebp
                   }
                 }
               }
@@ -492,8 +490,8 @@ export const HomeQuery = graphql`
               localFile {
                 name
                 childImageSharp {
-                  fluid(maxWidth: 680) {
-                    ...GatsbyImageSharpFluid
+                  fluid(maxWidth: 350) {
+                    ...GatsbyImageSharpFluid_withWebp
                   }
                 }
               }
@@ -514,7 +512,7 @@ export const HomeQuery = graphql`
             name
             childImageSharp {
               fluid(maxWidth: 640) {
-                ...GatsbyImageSharpFluid
+                ...GatsbyImageSharpFluid_withWebp
               }
             }
           }
@@ -532,13 +530,9 @@ export const HomeQuery = graphql`
       name
       absolutePath
       childImageSharp {
-        fluid(quality: 100) {
-          base64
-          tracedSVG
-          srcWebp
-          srcSetWebp
+        fluid(quality: 50) {
           originalImg
-          originalName
+          ...GatsbyImageSharpFluid_withWebp
         }
       }
     }
@@ -547,12 +541,8 @@ export const HomeQuery = graphql`
       absolutePath
       childImageSharp {
         fluid(quality: 100) {
-          base64
-          tracedSVG
-          srcWebp
-          srcSetWebp
+          ...GatsbyImageSharpFluid_withWebp
           originalImg
-          originalName
         }
       }
     }
