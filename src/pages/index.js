@@ -199,7 +199,13 @@ class IndexPage extends React.Component {
 
           <div className={`depth-image-image`} style={{ backgroundImage: "" }}>
             <div className="gatsby-image-wrapper">
-              <img src={data.file2.childImageSharp.base64.base64} alt="" />
+              <img
+                src={data.file2.childImageSharp.base64.base64}
+                style={{
+                  minWidth: "100vw",
+                  maxHeight: "112vh",
+                }}
+              />
             </div>
             {/*<Img
               key={this.state.mapKey}

@@ -13,14 +13,6 @@ module.exports = {
       },
     },
     {
-      resolve: "gatsby-plugin-web-font-loader",
-      options: {
-        google: {
-          families: ["Roboto Slab:400,500,600"],
-        },
-      },
-    },
-    {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
         trackingId: process.env.GA_ID || "UA-xxxxxxxxx-x",

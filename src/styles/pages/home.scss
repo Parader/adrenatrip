@@ -23,8 +23,6 @@ main .page-home {
         transform: scaleX(-1) scaleY(1.25) translateY(-58px);
         height: 100vh;
         img {
-          min-width: 100vw;
-          max-height: 112vh;
           transform: translateX(-50%);
           position: absolute;
           left: 50%;
