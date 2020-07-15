@@ -1,5 +1,5 @@
 import React from "react"
-import { StaticQuery, graphql, Link, navigate } from "gatsby"
+import { Link, navigate } from "gatsby"
 import classNames from "classnames"
 import Img from "../components/image"
 import {
@@ -32,18 +32,21 @@ const PostFooter = ({ currentPost, nextPost, handleCategoryClick }) => {
         <div className="share-buttons">
           <a
             target="_blank"
+            rel="noreferrer"
             href={`https://www.facebook.com/sharer/sharer.php?u=${currentPost.url}`}
           >
             <FacebookFilled />
           </a>
           <a
             target="_blank"
+            rel="noreferrer"
             href={`https://twitter.com/home?status=${currentPost.url}`}
           >
             <TwitterSquareFilled />
           </a>
           <a
             target="_blank"
+            rel="noreferrer"
             href={`https://www.linkedin.com/shareArticle?mini=true&url=${currentPost.url}&title=&summary=&source=`}
           >
             <LinkedinFilled />

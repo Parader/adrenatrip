@@ -1,7 +1,5 @@
 import React from "react"
-import { Link, graphql } from "gatsby"
-import ReactDOM from "react-dom"
-import Img from "gatsby-image"
+import { Link } from "gatsby"
 import TweenOne from "rc-tween-one"
 import SEO from "../components/seo"
 import { Layout } from "antd"
