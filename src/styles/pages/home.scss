@@ -20,12 +20,13 @@ main .page-home {
         max-width: inherit;
         max-height: inherit;
         margin: 0;
-        transform: scaleX(-1) scaleY(1.25) translateY(-58px);
-        height: 100vh;
-        img {
-          transform: translateX(-50%);
-          position: absolute;
-          left: 50%;
+        transform: scaleX(-1);
+        height: 112vh;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center -2vh;
+        @media (min-width: 1260px) {
+          background-position: center -18vh;
         }
       }
     }

@@ -15,7 +15,6 @@ import "antd/dist/antd.less"
 import "swiper/swiper.scss"
 import "../styles/styles.scss"
 import "react-medium-image-zoom/dist/styles.css"
-import "typeface-roboto-slab"
 
 const Layout = ({ children, location, ...props }) => {
   const data = useStaticQuery(graphql`
