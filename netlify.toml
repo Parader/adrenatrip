@@ -8,22 +8,6 @@
 [plugins]]
   package = "netlify-plugin-gatsby-cache"
 
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
-  [plugins.inputs]
-    audit_url = 'https://adrenatrip.com'
-
-# Expects incoming webhook from my Ghost CMS
-[template]
-  incoming-hooks = ["Ghost"]
-
-# Role-based redirects do not have a 'to' property.
-[[redirects]]
-  from = "/secret_admin"
-  status = 200
-  conditions = {Role = ["admin"]}
-  force = true
-
 # Headers to return with requests for the specified paths
 [[headers]]
   # Define which paths this specific [[headers]] block will cover.
