@@ -1,6 +1,5 @@
 import React from "react"
 import Gsap from "gsap"
-import TweenOne from "rc-tween-one"
 
 class DepthImage extends React.Component {
   constructor(props) {

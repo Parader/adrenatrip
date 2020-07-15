@@ -2,7 +2,6 @@ import React from "react"
 import { Link, graphql } from "gatsby"
 import ReactDOM from "react-dom"
 import Img from "gatsby-image"
-import TweenOne from "rc-tween-one"
 import SEO from "../components/seo"
 import stripHtml from "../utils/stripHtml"
 
@@ -111,12 +110,7 @@ class PageTemplate extends React.Component {
     const currentPage = this.props.data.wordpressPage
 
     const content = this.swapFigures()
-    const fadeIn = {
-      y: 0,
-      opacity: 1,
-      duration: 200,
-      delay: 200,
-    }
+
     return (
       <div className={`page ${currentPage.slug}`}>
         <SEO
@@ -126,21 +120,15 @@ class PageTemplate extends React.Component {
         />
         <Content className="content-wrapper">
           <div className="page-content">
-            <TweenOne
-              animation={fadeIn}
-              style={{ transform: "translateY(10px)", opacity: 0 }}
-            >
-              <h1 dangerouslySetInnerHTML={{ __html: currentPage.title }} />
-            </TweenOne>
-            <TweenOne
-              animation={{ ...fadeIn, delay: 300 }}
-              style={{ transform: "translateY(10px)", opacity: 0 }}
-            >
-              <div
-                ref={this.content}
-                dangerouslySetInnerHTML={{ __html: content }}
-              />
-            </TweenOne>
+            <h1
+              className="fade-in"
+              dangerouslySetInnerHTML={{ __html: currentPage.title }}
+            />
+            <div
+              className="fade-in"
+              ref={this.content}
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
           </div>
         </Content>
       </div>
