@@ -100,12 +100,7 @@ function SEO({
           }`,
         },
       ].concat(meta)}
-    >
-      <meta
-        http-equiv="Content-Security-Policy"
-        content="default-src 'self'; img-src https://*; child-src 'none';"
-      />
-    </Helmet>
+    />
   )
 }
 
