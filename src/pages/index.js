@@ -197,11 +197,14 @@ class IndexPage extends React.Component {
             toggleAdvancedBackground={this.toggleAdvancedBackground}
           ></DepthImage>
 
-          <div className={`depth-image-image`}>
-            <Img
+          <div className={`depth-image-image`} style={{ backgroundImage: "" }}>
+            <div className="gatsby-image-wrapper">
+              <img src={data.file2.childImageSharp.base64.base64} alt="" />
+            </div>
+            {/*<Img
               key={this.state.mapKey}
               fluid={data.file2.childImageSharp.fluid}
-            />
+            /> */}
           </div>
 
           <div className="content">
@@ -543,6 +546,9 @@ export const HomeQuery = graphql`
         fluid(quality: 100) {
           ...GatsbyImageSharpFluid_withWebp
           originalImg
+        }
+        base64: sizes(base64Width: 1920, maxHeight: 1280, quality: 100) {
+          base64
         }
       }
     }

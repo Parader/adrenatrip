@@ -152,13 +152,16 @@ class DepthImage extends React.Component {
 
       loop()
     }
+    document.querySelector(".depth-image-image").classList.remove("fadeOut")
     if (typeof window !== "undefined" && window.innerWidth > 1160) {
       if (this.container.current) init()
     }
   }
 
   toggleAdvancedBackground = () => {
-    document.querySelector(".depth-image-image").classList.add("fadeOut")
+    if (typeof window !== "undefined" && window.innerWidth > 1160) {
+      document.querySelector(".depth-image-image").classList.add("fadeOut")
+    }
   }
 
   componentWillUnmount() {

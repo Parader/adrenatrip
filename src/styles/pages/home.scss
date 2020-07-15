@@ -20,8 +20,15 @@ main .page-home {
         max-width: inherit;
         max-height: inherit;
         margin: 0;
-        transform: scaleX(-1);
+        transform: scaleX(-1) scaleY(1.25) translateY(-58px);
         height: 100vh;
+        img {
+          min-width: 100vw;
+          max-height: 112vh;
+          transform: translateX(-50%);
+          position: absolute;
+          left: 50%;
+        }
       }
     }
     .depth-image {

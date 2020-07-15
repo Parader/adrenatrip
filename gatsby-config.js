@@ -20,6 +20,15 @@ module.exports = {
         },
       },
     },
+    {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: process.env.GA_ID || "UA-xxxxxxxxx-x",
+        head: false,
+        respectDNT: true,
+        defer: true,
+      },
+    },
     `gatsby-transformer-sharp`,
     `gatsby-plugin-netlify-cache`,
     `gatsby-plugin-sharp`,
