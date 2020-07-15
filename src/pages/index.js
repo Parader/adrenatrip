@@ -188,7 +188,7 @@ class IndexPage extends React.Component {
           )}
         />
 
-        <section className="splash-screen shade">
+        <section className="splash-screen">
           <DepthImage
             image={data.file2}
             depthmap={data.file}
@@ -240,7 +240,7 @@ class IndexPage extends React.Component {
         <section className="slider articles-slider">
           <VisibilitySensor>
             {({ isVisible }) => {
-              const classes = classNames("fader shade", {
+              const classes = classNames("fader", {
                 isVisible: isVisible || counter > 0,
               })
               if (isVisible && counter < 1) {
@@ -271,7 +271,7 @@ class IndexPage extends React.Component {
                     style={{ "--anim-order": i }}
                   >
                     <Link to={`/articles/${a.slug}`}>
-                      <div className="thumbnail shade">
+                      <div className="thumbnail">
                         <Img
                           fluid={
                             a.acf.featured_image.localFile.childImageSharp.fluid
@@ -280,14 +280,14 @@ class IndexPage extends React.Component {
                         />
                         <div className="swiper-lazy-preloader"></div>
                       </div>
-                      <div className="content shade">
+                      <div className="content">
                         <h4 title={a.title}>{`${a.title.substring(0, 36)}${
                           a.title.length > 36 ? "..." : ""
                         }`}</h4>
                         <p>{`${date[0]} ${getMonth(date[1])} ${date[2]}`}</p>
                       </div>
                     </Link>
-                    <div className="tags shade">
+                    <div className="tags">
                       {a.categories.map((c, j) => {
                         const cat = getItemById(
                           c.id,
@@ -315,17 +315,17 @@ class IndexPage extends React.Component {
               })}
             </div>
 
-            <div className="swiper-button-prev shade">
+            <div className="swiper-button-prev">
               <LeftOutlined />
             </div>
-            <div className="swiper-button-next active shade">
+            <div className="swiper-button-next active">
               <RightOutlined />
             </div>
           </div>
         </section>
         <VisibilitySensor partialVisibility>
           {({ isVisible }) => {
-            const classes = classNames("about fader shade", {
+            const classes = classNames("about fader", {
               isVisible: isVisible || counter > 1,
             })
 
@@ -364,7 +364,7 @@ class IndexPage extends React.Component {
           }}
         </VisibilitySensor>
 
-        <section className="section-categories shade">
+        <section className="section-categories">
           <VisibilitySensor partialVisibility="bottom">
             {({ isVisible }) => {
               const classes = classNames("fader", {

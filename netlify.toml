@@ -1,0 +1,55 @@
+# Global build commands
+[build]
+  command = "gatsby build"
+  publish = "public/"
+  functions = "functions/"
+
+# Installed Netlify plugins
+[plugins]]
+  package = "netlify-plugin-gatsby-cache"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  [plugins.inputs]
+    audit_url = 'https://adrenatrip.com'
+
+# Expects incoming webhook from my Ghost CMS
+[template]
+  incoming-hooks = ["Ghost"]
+
+# Role-based redirects do not have a 'to' property.
+[[redirects]]
+  from = "/secret_admin"
+  status = 200
+  conditions = {Role = ["admin"]}
+  force = true
+
+# Headers to return with requests for the specified paths
+[[headers]]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/*"
+
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+
+    # Multi-key header rules are expressed with multi-line strings.
+    cache-control = '''
+      max-age=31557600,
+      no-cache,
+      no-store,
+      must-revalidate'''
+
+# Asset optimization
+[build.processing]
+  skip_processing = false
+[build.processing.css]
+  bundle = true
+  minify = true
+[build.processing.js]
+  bundle = true
+  minify = true
+[build.processing.html]
+  pretty_urls = true
+[build.processing.images]
+  compress = true

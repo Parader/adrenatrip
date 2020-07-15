@@ -26,9 +26,6 @@ const Layout = ({ children, location, ...props }) => {
       }
     }
   `)
-  if (typeof window !== `undefined`) {
-    // window.localStorage.removeItem("filtersTrace")
-  }
 
   return (
     <>
