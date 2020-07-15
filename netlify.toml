@@ -5,11 +5,11 @@
   functions = "functions/"
 
 # Installed Netlify plugins
-[plugins]
+[[plugins]]
   package = "netlify-plugin-gatsby-cache"
 
 # Headers to return with requests for the specified paths
-[headers]
+[[headers]]
   # Define which paths this specific [[headers]] block will cover.
   for = "/*"
 
