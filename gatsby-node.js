@@ -56,6 +56,7 @@ exports.createPages = ({ graphql, actions }) => {
           // Plugins and sites can use functions like "createPage"
           // to interact with Gatsby.
           if (edge.node.slug == "index") return
+          if (edge.node.slug == "articles") return
 
           createPage({
             // Each page is required to have a `path` as well

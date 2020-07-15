@@ -83,7 +83,7 @@ class Header extends React.Component {
 
   render() {
     const { location } = this.props
-    const headerClasses = classNames("shade", {
+    const headerClasses = classNames("", {
       home: location.pathname === "/",
     })
     return (
