@@ -47,36 +47,48 @@ class PageTemplate extends React.Component {
   }
 
   replaceImages() {
-    const { images } = this.props.data.wordpressPage.acf
-    const imgs = this.content.current.getElementsByTagName("figure")
+    const { images } = this.props.data.wordpressPost.acf
+    const imgs = this.content.current.querySelectorAll("figure")
+
     if (imgs.length > 0) {
-      times(imgs.length)(() => {
-        const img = imgs[0]
-        let alt = ""
-        if (img.attributes["data-alt"]) {
-          alt = img.attributes["data-alt"].nodeValue
-        } else {
-          alt = img.firstChild
-            ? img.firstChild.nextSibling.attributes[1].value
-            : ""
+      for (let i = 0; i < imgs.length; i++) {
+        const img = imgs[i]
+        if (
+          !img.classList.value.includes("embed") &&
+          !img.classList.value.includes("block-table")
+        ) {
+          let alt = ""
+          if (img.attributes["data-alt"]) {
+            alt = img.attributes["data-alt"].nodeValue
+          } else {
+            alt =
+              img.firstChild &&
+              img.firstChild.nextSibling &&
+              img.firstChild.nextSibling.attributes[1]
+                ? img.firstChild.nextSibling.attributes[1].value
+                : ""
+          }
+
+          const imgUrl = img.attributes[0].value
+
+          const imgName = imgUrl.substring(
+            imgUrl.lastIndexOf("/") + 1,
+            imgUrl.lastIndexOf(".")
+          )
+          const file = images.filter(i => i.localFile.name === imgName)[0]
+
+          const fluidImage = file.localFile.childImageSharp.fluid
+
+          const elm = document.createElement("span")
+          const isZoomable = !img.parentElement.classList.contains(
+            "full-screen-image"
+          )
+
+          img.parentElement.insertBefore(elm, img)
+          img.remove()
+          this.renderImage(elm, fluidImage, alt, isZoomable)
         }
-
-        const imgUrl = img.attributes[0].value
-        const imgName = imgUrl.substring(
-          imgUrl.lastIndexOf("/") + 1,
-          imgUrl.lastIndexOf(".")
-        )
-
-        const file = images.filter(i => i.localFile.name === imgName)[0]
-        const fluidImage = file.localFile.childImageSharp.fluid
-
-        const elm = document.createElement("span")
-        const isZoomable = !img.classList.contains("full-screen-image")
-
-        img.parentElement.insertBefore(elm, img)
-        img.remove()
-        this.renderImage(elm, fluidImage, alt, isZoomable)
-      })
+      }
     }
   }
 

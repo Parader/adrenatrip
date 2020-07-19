@@ -73,7 +73,7 @@ function SEO({
         },
         {
           property: `og:image`,
-          content: `${location.origin}${
+          content: `${
             image ? image : metaImage.childImageSharp.fluid.originalImg
           }`,
         },
@@ -95,7 +95,7 @@ function SEO({
         },
         {
           name: `twitter:image`,
-          content: `${location.origin}${
+          content: `${
             image ? image : metaImage.childImageSharp.fluid.originalImg
           }`,
         },

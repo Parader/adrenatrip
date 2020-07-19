@@ -141,6 +141,39 @@ p {
   font-size: 16px;
 }
 
+.wp-block-table {
+  max-width: 680px;
+  margin: 48px auto;
+
+  table {
+    width: 100%;
+    font-size: 17px;
+    margin-bottom: 8px;
+    tr:first-child {
+      border-top: 1px solid #ccc;
+      td:last-child {
+        // border-right: 1px solid #ccc;
+      }
+    }
+    tr {
+      border-bottom: 1px solid #ccc;
+    }
+    td {
+      border-left: 1px solid #ccc;
+      padding: 8px 16px;
+    }
+    td:last-child {
+      border-right: 1px solid #ccc;
+    }
+  }
+  figcaption {
+    font-size: 14px;
+    a {
+      font-size: 14px;
+    }
+  }
+}
+
 blockquote,
 .post blockquote {
   position: relative;
