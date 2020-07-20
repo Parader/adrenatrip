@@ -389,6 +389,10 @@ main .page-home {
         color: $grey8;
         max-width: 560px;
       }
+      .text {
+        max-height: 230px;
+        overflow-y: scroll;
+      }
     }
     .picture {
       width: 100%;

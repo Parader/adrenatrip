@@ -181,7 +181,7 @@ class IndexPage extends React.Component {
     return (
       <div className="page page-home" ref={this.page}>
         <SEO
-          title="Accueil"
+          title="Adrenatrip - Accueil"
           location={location}
           description={stripHtml(
             data.wordpressPage.content.substring(0, 130) + "..."
@@ -349,6 +349,7 @@ class IndexPage extends React.Component {
                     }}
                   ></h2>
                   <span
+                    className="text"
                     dangerouslySetInnerHTML={{
                       __html: data.wordpressPage.content,
                     }}

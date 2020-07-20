@@ -129,8 +129,24 @@
     min-height: 748px;
 
     @media (max-width: 1080px) {
-      position: static;
+      position: relative;
       overflow-x: scroll;
+    }
+
+    .mobile-arrows {
+      position: absolute;
+      display: none;
+      @media (max-width: 1080px) {
+        display: block;
+        left: 50px;
+        top: 60%;
+        animation: arrow 1500ms linear;
+        animation-iteration-count: infinite;
+        .anticon {
+          font-size: 33px;
+          color: $grey6;
+        }
+      }
     }
     .gallery {
       position: relative;
@@ -256,7 +272,7 @@
         left: 86%;
         top: 40%;
         @media (max-width: 1080px) {
-          left: 600px;
+          left: 530px;
           top: 20px;
         }
       }
@@ -264,7 +280,7 @@
         left: 84%;
         top: -10%;
         @media (max-width: 1080px) {
-          left: 680px;
+          left: 630px;
           top: 360px;
         }
       }
@@ -385,5 +401,23 @@
     opacity: 1;
     visibility: visible;
     transform: translateY(0px);
+  }
+}
+
+@keyframes arrow {
+  0% {
+    opacity: 0;
+    visibility: visible;
+    transform: translateX(60px);
+  }
+  50% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 0;
+    visibility: visible;
+    transform: translateX(0px);
   }
 }

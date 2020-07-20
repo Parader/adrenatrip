@@ -47,7 +47,7 @@ class PageTemplate extends React.Component {
   }
 
   replaceImages() {
-    const { images } = this.props.data.wordpressPost.acf
+    const { images } = this.props.data.wordpressPage.acf
     const imgs = this.content.current.querySelectorAll("figure")
 
     if (imgs.length > 0) {

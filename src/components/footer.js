@@ -86,7 +86,9 @@ class Footer extends React.Component {
                       className={classes + " content"}
                       style={{ "--anim-order": "2" }}
                       key="1"
-                      dangerouslySetInnerHTML={{ __html: texte_footer }}
+                      dangerouslySetInnerHTML={{
+                        __html: `<p>${texte_footer}</p>`,
+                      }}
                     ></div>,
                     <nav
                       className={classes + " footer-menu"}

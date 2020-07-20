@@ -1,7 +1,7 @@
 import React from "react"
 import { StaticQuery, graphql } from "gatsby"
 import Img from "./image"
-import { InstagramOutlined } from "@ant-design/icons"
+import { InstagramOutlined, DoubleLeftOutlined } from "@ant-design/icons"
 import classNames from "classnames"
 import VisibilitySensor from "react-visibility-sensor"
 
@@ -28,6 +28,9 @@ class InstagramModule extends React.Component {
           ></div>
         </div>
         <div className="back">
+          <div className="mobile-arrows">
+            <DoubleLeftOutlined />
+          </div>
           <StaticQuery
             query={graphql`
               query instaQuery {

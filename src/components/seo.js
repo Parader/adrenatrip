@@ -43,6 +43,7 @@ function SEO({
   if (location.href && location.href.includes("/articles/")) {
     type = "article"
   }
+
   return (
     <Helmet
       htmlAttributes={{
@@ -73,7 +74,7 @@ function SEO({
         },
         {
           property: `og:image`,
-          content: `${
+          content: `https://adrenatrip.com${
             image ? image : metaImage.childImageSharp.fluid.originalImg
           }`,
         },
@@ -95,7 +96,7 @@ function SEO({
         },
         {
           name: `twitter:image`,
-          content: `${
+          content: `https://adrenatrip.com${
             image ? image : metaImage.childImageSharp.fluid.originalImg
           }`,
         },
