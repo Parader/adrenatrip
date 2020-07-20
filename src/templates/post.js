@@ -158,10 +158,7 @@ class PostTemplate extends React.Component {
           description={stripHtml(
             data.wordpressPost.content.substring(0, 130) + "..."
           )}
-          image={
-            data.wordpressPost.acf.featured_image.localFile.childImageSharp
-              .fluid.src
-          }
+          image={data.wordpressPost.acf.featured_image.localFile.url}
         />
         <Content className="content-wrapper">
           {hasCover && (
@@ -277,6 +274,7 @@ export const postQuery = graphql`
           alt_text
           localFile {
             name
+            url
             childImageSharp {
               fluid(maxWidth: 680, maxHeight: 520, fit: COVER) {
                 ...GatsbyImageSharpFluid_withWebp

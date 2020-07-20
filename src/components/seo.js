@@ -31,6 +31,7 @@ function SEO({
           name
           childImageSharp {
             fluid(quality: 100) {
+              ...GatsbyImageSharpFluid_withWebp
               originalImg
             }
           }
@@ -43,6 +44,7 @@ function SEO({
   if (location.href && location.href.includes("/articles/")) {
     type = "article"
   }
+  const staticImage = "https://adrenatrip.com/static/meta_image.png"
 
   return (
     <Helmet
@@ -74,9 +76,7 @@ function SEO({
         },
         {
           property: `og:image`,
-          content: `https://adrenatrip.com${
-            image ? image : metaImage.childImageSharp.fluid.originalImg
-          }`,
+          content: `https://adrenatrip.com${image ? image : staticImage}`,
         },
         {
           name: `twitter:card`,
@@ -96,9 +96,7 @@ function SEO({
         },
         {
           name: `twitter:image`,
-          content: `https://adrenatrip.com${
-            image ? image : metaImage.childImageSharp.fluid.originalImg
-          }`,
+          content: `${image ? image : staticImage}`,
         },
       ].concat(meta)}
     />
