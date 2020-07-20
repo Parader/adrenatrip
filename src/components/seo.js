@@ -76,7 +76,7 @@ function SEO({
         },
         {
           property: `og:image`,
-          content: `https://adrenatrip.com${image ? image : staticImage}`,
+          content: `${image ? image : staticImage}`,
         },
         {
           name: `twitter:card`,
