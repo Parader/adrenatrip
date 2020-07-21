@@ -44,7 +44,8 @@ function SEO({
   if (location.href && location.href.includes("/articles/")) {
     type = "article"
   }
-  const staticImage = "https://adrenatrip.com/static/meta_image.png"
+  const staticImage =
+    "http://api.adrenatrip.com/wp-content/uploads/2020/07/meta_image.png"
 
   return (
     <Helmet
