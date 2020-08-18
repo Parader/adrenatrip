@@ -83,10 +83,13 @@ class PageTemplate extends React.Component {
           const isZoomable = !img.parentElement.classList.contains(
             "full-screen-image"
           )
+          const isVertical = img.parentElement.classList.contains(
+            "vertical-image"
+          )
 
           img.parentElement.insertBefore(elm, img)
           img.remove()
-          this.renderImage(elm, fluidImage, alt, isZoomable)
+          this.renderImage(elm, fluidImage, alt, isZoomable, isVertical)
         }
       }
     }
@@ -96,10 +99,15 @@ class PageTemplate extends React.Component {
     ReactDOM.render(<Link to={href}>{text}</Link>, elm)
   }
 
-  renderImage(elm, image, alt, isZoomable) {
+  renderImage(elm, image, alt, isZoomable, isVertical) {
     ReactDOM.render(
       <>
-        <Img fluid={image} alt={alt} isZoomable={isZoomable} />
+        <Img
+          fluid={image}
+          alt={alt}
+          isZoomable={isZoomable}
+          className={`${isVertical ? "vertical" : ""}`}
+        />
         <p className="alt">{alt}</p>
       </>,
       elm
@@ -126,7 +134,7 @@ class PageTemplate extends React.Component {
     return (
       <div className={`page ${currentPage.slug}`}>
         <SEO
-          title={currentPage.title}
+          title={stripHtml(currentPage.title)}
           location={location}
           description={stripHtml(currentPage.content.substring(0, 150) + "...")}
         />

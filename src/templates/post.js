@@ -161,7 +161,7 @@ class PostTemplate extends React.Component {
     return (
       <div className={`post ${currentPost.slug}`}>
         <SEO
-          title={data.wordpressPost.title}
+          title={stripHtml(data.wordpressPost.title)}
           location={location}
           description={stripHtml(
             data.wordpressPost.content.substring(0, 130) + "..."
