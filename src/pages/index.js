@@ -16,7 +16,6 @@ import classNames from "classnames"
 import getItemById from "../utils/getItemById"
 import getMonth from "../utils/getMonth"
 import DepthImage from "../components/depthImage"
-import gsap from "gsap"
 import VisibilitySensor from "react-visibility-sensor"
 import stripHtml from "../utils/stripHtml"
 
