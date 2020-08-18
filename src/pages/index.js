@@ -61,6 +61,8 @@ class IndexPage extends React.Component {
       },
     })
 
+    document.querySelector("header").classList.add("home")
+
     // STICKY HEADER
     this.basicScrolls.push(
       basicScroll.create({
@@ -289,9 +291,14 @@ class IndexPage extends React.Component {
                         <div className="swiper-lazy-preloader"></div>
                       </div>
                       <div className="content">
-                        <h4 title={a.title}>{`${a.title.substring(0, 36)}${
-                          a.title.length > 36 ? "..." : ""
-                        }`}</h4>
+                        <h4
+                          title={a.title}
+                          dangerouslySetInnerHTML={{
+                            __html: `${a.title.substring(0, 35)}${
+                              a.title.length > 35 ? "..." : ""
+                            }`,
+                          }}
+                        ></h4>
                         <p>{`${date[0]} ${getMonth(date[1])} ${date[2]}`}</p>
                       </div>
                     </Link>

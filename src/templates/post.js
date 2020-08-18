@@ -179,7 +179,11 @@ class PostTemplate extends React.Component {
             <Breadcrumb.Item>
               <Link to="/articles"> Articles</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>{currentPost.title}</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <span
+                dangerouslySetInnerHTML={{ __html: currentPost.title }}
+              ></span>
+            </Breadcrumb.Item>
           </Breadcrumb>
           <div className="post-content">
             <h1
