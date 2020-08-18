@@ -26,6 +26,11 @@ main .page {
         max-height: 45vh !important;
       }
     }
+    .wp-block-lazyblock-vertical-img {
+      .gatsby-image-wrapper {
+        max-height: inherit !important;
+      }
+    }
     .title {
       margin-bottom: 0;
     }
@@ -147,6 +152,7 @@ main .page {
     max-height: 520px;
     margin: 40px auto 0px;
   }
+
   p.alt {
     margin-top: 8px;
     margin-bottom: 80px;

@@ -429,7 +429,11 @@ class ArticlesPage extends React.Component {
                         </div>
                         <div className="content">
                           <span>
-                            <h2>{a.node.title}</h2>
+                            <h2
+                              dangerouslySetInnerHTML={{
+                                __html: a.node.title,
+                              }}
+                            ></h2>
                             <p>{`${date[0]} ${getMonth(date[1])} ${
                               date[2]
                             }`}</p>
