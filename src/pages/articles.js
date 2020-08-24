@@ -360,7 +360,10 @@ class ArticlesPage extends React.Component {
                         </div>
                         <div className="content">
                           <span>
-                            <h2 title={a.node.title}>{a.node.title}</h2>
+                            <h2
+                              title={a.node.title}
+                              dangerouslySetInnerHTML={{ __html: a.node.title }}
+                            ></h2>
                             <p>{`${date[0]} ${getMonth(date[1])} ${
                               date[2]
                             }`}</p>
