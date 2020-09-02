@@ -210,6 +210,7 @@ main .page {
       max-height: 90vh !important;
       min-height: 60vh !important;
       max-width: inherit;
+      height: 90vh;
     }
     :global {
       [data-rmiz-wrap="visible"],
