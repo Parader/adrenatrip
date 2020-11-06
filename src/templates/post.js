@@ -74,9 +74,16 @@ class PostTemplate extends React.Component {
             imgUrl.lastIndexOf("/") + 1,
             imgUrl.lastIndexOf(".")
           )
-          const file = images.filter(i => i.localFile.name === imgName)[0]
 
-          const fluidImage = file.localFile.childImageSharp.fluid
+          const file = images.filter(i => {
+            if (i.localFile.name === imgName) {
+            } else {
+              console.log(imgName, i.localFile.name)
+            }
+            return i.localFile.name === imgName
+          })[0]
+
+          const fluidImage = file?.localFile?.childImageSharp?.fluid
 
           const elm = document.createElement("span")
           const isZoomable = !img.parentElement.classList.contains(
