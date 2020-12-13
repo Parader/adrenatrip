@@ -145,11 +145,11 @@ class Header extends React.Component {
                   </Menu.Item>
                   <Menu.Item
                     onClick={() => {
-                      navigate("/liens-utiles")
+                      navigate("/bucket-list")
                     }}
                   >
-                    <Link to={"/liens-utiles"} className="underline-hover">
-                      Liens Utiles
+                    <Link to={"/bucket-list"} className="underline-hover">
+                      Bucket List
                     </Link>
                   </Menu.Item>
                   <Menu.Item className="icon">
