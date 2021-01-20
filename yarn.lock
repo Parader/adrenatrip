@@ -6516,9 +6516,9 @@ graphql@^14.6.0:
   dependencies:
     iterall "^1.2.2"
 
-gsap@^3.3.1:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.5.0.tgz#ca1753b062309390b46fb3fda245a4a65fb52c2a"
+gsap@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.6.0.tgz#925f25370c698ce0f6ea563522da8f6b5ed21b0a"
 
 gud@^1.0.0:
   version "1.0.0"
