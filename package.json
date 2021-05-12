@@ -33,7 +33,7 @@
     "react-helmet": "^6.0.0",
     "react-medium-image-zoom": "^4.3.0",
     "react-visibility-sensor": "^5.1.1",
-    "swiper": "^5.3.8",
+    "swiper": "^6.5.1",
     "typeface-roboto-slab": "^1.1.4"
   },
   "devDependencies": {
