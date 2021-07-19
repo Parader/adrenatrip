@@ -21,7 +21,7 @@
     "gatsby-plugin-sharp": "^2.5.6",
     "gatsby-source-filesystem": "^2.2.4",
     "gatsby-source-instagram": "^0.8.0",
-    "gatsby-source-wordpress": "^3.2.5",
+    "gatsby-source-wordpress": "^4.0.8",
     "gatsby-transformer-sharp": "^2.4.6",
     "gsap": "^3.3.1",
     "less": "^3.11.1",
